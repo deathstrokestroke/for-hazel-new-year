@@ -24,48 +24,41 @@
 
         .active { display: flex !important; }
 
-        /* FULL-SCREEN FROST */
-        #frost-overlay {
+        /* VIDEO OVERLAY */
+        #video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 200; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; overflow: hidden;
-            background: black; /* Prevents seeing the slide before shatter */
+            z-index: 200; background: black;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        #frost-img {
+        #ice-video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: none; /* Hidden until tap */
+        }
+
+        /* Initial Frost Image (The "Cover") */
+        #frost-cover {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
-            /* SLOWED DOWN TRANSITION (2.2 seconds) */
-            transition: transform 2.2s cubic-bezier(0.1, 0, 0.3, 1), opacity 2.5s ease-in-out, filter 2s;
-        }
-        
-        /* The SLOW Shatter Effect */
-        .shatter {
-            transform: scale(1.8) rotate(5deg);
-            opacity: 0;
-            filter: blur(15px);
-            pointer-events: none;
+            z-index: 202;
         }
 
         .frost-hint { 
-            position: relative; z-index: 201;
+            position: relative; z-index: 205;
             color: white; font-weight: bold; font-size: 1.1rem; 
             background: rgba(0,0,0,0.6); padding: 15px 25px; 
             border-radius: 50px; border: 1px solid rgba(255,255,255,0.4);
             text-transform: uppercase; letter-spacing: 2px;
-            transition: opacity 1s ease;
+            cursor: pointer;
         }
 
-        /* Message Styling */
+        /* Style for Lanterns and Cards stays the same */
         .ny-text { font-weight: bold; font-style: italic; color: #fff; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37; line-height: 1.3; margin-top: 10vh; z-index: 10; }
         .sub-text { font-size: 1.1rem; color: #f0e68c; max-width: 90%; margin-top: 15px; line-height: 1.6; z-index: 10; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.6); border: 1px solid rgba(212, 175, 55, 0.2); }
         .ny-btn { margin-top: 30px; padding: 18px 35px; background: linear-gradient(135deg, #d4af37 0%, #8a6d1d 100%); color: #000; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; z-index: 100; }
-        
-        /* Lanterns */
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
-        
-        /* Card */
         .card-container { width: 320px; height: 460px; perspective: 1000px; margin-top: 20px; z-index: 20; }
         .card-inner { width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; position: relative; }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border: 4px solid #d4af37; border-radius: 15px; background-size: cover; display: flex; align-items: center; justify-content: center; background-color: white; }
@@ -74,7 +67,6 @@
         .card-back { background-image: url('card_back.png'); transform: rotateY(360deg); }
         .flipped-1 { transform: rotateY(-180deg); }
         .flipped-2 { transform: rotateY(-360deg); }
-        
         .final-img { width: 200px; margin-top: 4vh; border-radius: 50%; border: 3px solid #d4af37; box-shadow: 0 0 30px #d4af37; }
     </style>
 </head>
@@ -83,10 +75,14 @@
     <audio id="nySong" loop><source src="music.mp3" type="audio/mpeg"></audio>
 
     <div class="slide active" id="s1" style="background-image: url('ny_bg1.jpg');">
-        <div id="frost-overlay" onclick="meltFrost()">
-            <img src="frost.png" id="frost-img">
-            <div class="frost-hint" id="hint-box">Break the Ice</div>
+        
+        <div id="video-container" onclick="playIceVideo()">
+            <img src="frost.png" id="frost-cover"> <video id="ice-video" playsinline muted>
+                <source src="ice_break.mp4" type="video/mp4">
+            </video>
+            <div class="frost-hint" id="hint-text">Break the Ice</div>
         </div>
+
         <h1 class="ny-text">hi haze ❤</h1>
         <p class="sub-text">2025 is behind us. A fresh, clean world is waiting. Are you ready to see what's next?</p>
         <button class="ny-btn" onclick="goToSlide(2)">Step Into 2026</button>
@@ -120,19 +116,26 @@
     <script>
         let step = 0;
         const song = document.getElementById('nySong');
+        const video = document.getElementById('ice-video');
 
-        function meltFrost() {
-            // Trigger the slow shatter
-            document.getElementById('frost-img').classList.add('shatter');
-            document.getElementById('hint-box').style.opacity = '0';
-            document.getElementById('frost-overlay').style.background = 'transparent';
+        function playIceVideo() {
+            // 1. Hide hint and show video
+            document.getElementById('hint-text').style.display = 'none';
+            document.getElementById('frost-cover').style.display = 'none';
+            video.style.display = 'block';
             
-            song.play().catch(e => console.log("Audio waiting"));
+            // 2. Play Video and Music
+            video.play();
+            song.play();
 
-            // Wait for the longer animation to finish before removing overlay
-            setTimeout(() => { 
-                document.getElementById('frost-overlay').style.display = 'none'; 
-            }, 2500); 
+            // 3. When video ends, hide the whole container
+            video.onended = function() {
+                document.getElementById('video-container').style.transition = "opacity 1s";
+                document.getElementById('video-container').style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById('video-container').style.display = "none";
+                }, 1000);
+            };
         }
 
         function goToSlide(n) {
@@ -148,12 +151,10 @@
             l.style.left = (e.clientX - 30) + 'px';
             l.style.top = e.clientY + 'px';
             document.body.appendChild(l);
-            
             l.animate([
                 { transform: 'translateY(0) scale(1)', opacity: 1 },
                 { transform: `translateY(-110vh) scale(0.5) rotate(${Math.random()*40 - 20}deg)`, opacity: 0 }
             ], { duration: 6000, easing: 'ease-in' });
-            
             setTimeout(() => l.remove(), 7000);
         }
 
