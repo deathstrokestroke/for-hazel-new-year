@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2026 | Haze</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: #000b18; 
+            color: #d4af37; 
+            font-family: 'Georgia', serif; 
+            overflow: hidden; 
+            width: 100vw; height: 100vh;
+        }
+
+        .slide {
+            height: 100vh; width: 100vw;
+            display: none; flex-direction: column; align-items: center; justify-content: flex-start;
+            background-size: cover; background-position: center;
+            position: absolute; text-align: center; padding: 25px;
+        }
+
+        /* Essential for showing slides */
+        .active { display: flex !important; }
+
+        /* Elegant New Year Text */
+        .ny-text {
+            font-weight: bold; font-style: italic;
+            color: #fff;
+            text-shadow: 0 0 8px #d4af37, 0 0 15px #d4af37;
+            line-height: 1.3;
+            margin-top: 10vh;
+            z-index: 10;
+        }
+
+        #s1 .ny-text { font-size: 2.8rem; }
+        #s2 .ny-text { font-size: 1.6rem; margin-top: 8vh; }
+        #s4 .ny-text { font-size: 1.6rem; margin-top: 2vh; }
+
+        .sub-text {
+            font-size: 1.2rem; color: #f0e68c;
+            max-width: 90%; margin-top: 15px;
+            line-height: 1.5; z-index: 10;
+            background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px;
+        }
+
+        .ny-btn {
+            margin-top: 30px; padding: 18px 35px;
+            background: linear-gradient(135deg, #d4af37 0%, #8a6d1d 100%);
+            color: #000; border: 2px solid #fff;
+            border-radius: 50px; font-size: 1.1rem;
+            font-weight: bold; cursor: pointer; z-index: 100;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* LARGE CARD FOR FAMILY */
+        .card-container { width: 330px; height: 480px; perspective: 1000px; margin-top: 20px; z-index: 20; }
+        .card-inner { width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; position: relative; cursor: pointer; }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border: 5px solid #d4af37; border-radius: 15px; background-size: cover; display: flex; align-items: center; justify-content: center; background-color: white; }
+        .card-front { background-image: url('card_front.png'); }
+        .card-inside { background-image: url('card_inside.png'); transform: rotateY(180deg); padding: 25px; flex-direction: column; }
+        .card-back { background-image: url('card_back.png'); transform: rotateY(360deg); }
+        
+        .flipped-1 { transform: rotateY(-180deg); }
+        .flipped-2 { transform: rotateY(-360deg); }
+
+        .inside-msg { color: #444; font-size: 1.15rem; line-height: 1.4; font-weight: bold; background: rgba(255,255,255,0.85); padding: 15px; border-radius: 10px; text-align: center; }
+
+        /* Slide 4 Final Image Placeholder */
+        .final-img {
+            width: 240px; 
+            margin-top: 6vh;
+            border-radius: 15px;
+            z-index: 15;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Interactive Sparkles */
+        .spark { position: fixed; width: 4px; height: 4px; background: #d4af37; border-radius: 50%; pointer-events: none; z-index: 999; }
+    </style>
+</head>
+<body>
+
+    <audio id="nySong" loop><source src="music.mp3" type="audio/mpeg"></audio>
+
+    <div class="slide active" id="s1" style="background-image: url('ny_bg1.jpg');">
+        <h1 class="ny-text">hi haze ❤<br>2025 is fading...</h1>
+        <p class="sub-text">I wanted to be the first person to walk into the new year with you. Are you ready for our next chapter?</p>
+        <button class="ny-btn" onclick="startApp()">Enter 2026 ✨</button>
+    </div>
+
+    <div class="slide" id="s2" style="background-image: url('ny_bg2.jpg');">
+        <h1 class="ny-text">A New Page,<br>A New Promise.</h1>
+        <p class="sub-text">2025 was a heavy year, but you carried it with so much grace. In 2026, I don’t just want to be the person you love—I want to be your peace. No matter what the next 365 days bring, my hand is staying in yours. We’re doing this together.</p>
+        <button class="ny-btn" onclick="goToSlide(3)">For your family 🥂</button>
+    </div>
+
+    <div class="slide" id="s3" style="background-image: url('ny_bg3.jpg');">
+        <div class="card-container" onclick="flipCard()">
+            <div class="card-inner" id="inner">
+                <div class="card-face card-front">
+                    <p style="color:#000; font-weight:bold; background:rgba(212,175,55,0.9); padding:12px; border-radius:5px;">Tap to Open ✉</p>
+                </div>
+                <div class="card-face card-inside">
+                    <p class="inside-msg">Happy New Year to your family. I know the start of a year can feel bittersweet when someone so important is missing, but I hope 2026 brings you all moments of healing and gentle joy. You are in my heart as we start this fresh chapter.</p>
+                </div>
+                <div class="card-face card-back">
+                    <p style="color:#000; font-weight:bold; background:rgba(212,175,55,0.9); padding:12px; border-radius:5px;">2026 Blessings ✨</p>
+                </div>
+            </div>
+        </div>
+        <button class="ny-btn" onclick="goToSlide(4)">One last thing... 💖</button>
+    </div>
+
+    <div class="slide" id="s4" style="background-image: url('ny_bg4.jpg');">
+        <img src="final_visual.png" class="final-img" alt="2026 Celebration">
+        <h1 class="ny-text">Our Best Year Yet</h1>
+        <p class="sub-text">Let’s leave the weight of the past behind and just focus on us. I’m so proud of you, and I’m so lucky I get to call you mine for another year. Happy New Year, babe. I love you more than words can catch up to. <br><br> ✨ 2026 is ours. ✨</p>
+    </div>
+
+    <script>
+        let step = 0;
+        const song = document.getElementById('nySong');
+
+        function startApp() {
+            song.play().catch(e => console.log("Audio waiting for interaction"));
+            goToSlide(2);
+        }
+
+        function goToSlide(n) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('s' + n);
+            if (target) target.classList.add('active');
+        }
+
+        function flipCard() {
+            step++;
+            const el = document.getElementById('inner');
+            if(step==1) el.className = 'card-inner flipped-1';
+            else if(step==2) el.className = 'card-inner flipped-2';
+            else { el.className = 'card-inner'; step=0; }
+        }
+
+        // Tap for Sparkles Effect
+        document.addEventListener('click', (e) => {
+            for(let i=0; i<12; i++) {
+                const s = document.createElement('div');
+                s.className = 'spark';
+                s.style.left = e.clientX + 'px';
+                s.style.top = e.clientY + 'px';
+                
+                const vx = (Math.random()-0.5) * 150;
+                const vy = (Math.random()-0.5) * 150;
+                
+                s.animate([
+                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                    { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
+                ], { duration: 1000, easing: 'ease-out' });
+
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 1000);
+            }
+        });
+    </script>
+</body>
+</html>
