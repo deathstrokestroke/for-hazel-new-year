@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026 | Sanctuary</title>
+    <title>For Haze | 2026</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background-color: #000b18; 
+            background-color: #000; 
             color: #d4af37; 
             font-family: 'Georgia', serif; 
             overflow: hidden; 
@@ -27,38 +27,36 @@
         /* VIDEO OVERLAY */
         #video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 200; background: black;
+            z-index: 200; background: #000; /* Pure black background */
             display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
         }
 
         #ice-video {
             width: 100%; height: 100%;
             object-fit: cover;
-            display: none; /* Hidden until tap */
-        }
-
-        /* Initial Frost Image (The "Cover") */
-        #frost-cover {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: 202;
+            display: none; 
+            transform: scale(1.1); /* Hides watermarks */
         }
 
         .frost-hint { 
             position: relative; z-index: 205;
             color: white; font-weight: bold; font-size: 1.1rem; 
-            background: rgba(0,0,0,0.6); padding: 15px 25px; 
-            border-radius: 50px; border: 1px solid rgba(255,255,255,0.4);
+            background: rgba(212, 175, 55, 0.2); padding: 15px 30px; 
+            border-radius: 50px; border: 1px solid #d4af37;
             text-transform: uppercase; letter-spacing: 2px;
-            cursor: pointer;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
-        /* Style for Lanterns and Cards stays the same */
-        .ny-text { font-weight: bold; font-style: italic; color: #fff; text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37; line-height: 1.3; margin-top: 10vh; z-index: 10; }
+        /* Message Styling */
+        .ny-text { font-weight: bold; font-style: italic; color: #fff; text-shadow: 0 0 10px #d4af37; line-height: 1.3; margin-top: 10vh; z-index: 10; }
         .sub-text { font-size: 1.1rem; color: #f0e68c; max-width: 90%; margin-top: 15px; line-height: 1.6; z-index: 10; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.6); border: 1px solid rgba(212, 175, 55, 0.2); }
         .ny-btn { margin-top: 30px; padding: 18px 35px; background: linear-gradient(135deg, #d4af37 0%, #8a6d1d 100%); color: #000; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; z-index: 100; }
+        
+        /* Lanterns */
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
+        
+        /* Card */
         .card-container { width: 320px; height: 460px; perspective: 1000px; margin-top: 20px; z-index: 20; }
         .card-inner { width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; position: relative; }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border: 4px solid #d4af37; border-radius: 15px; background-size: cover; display: flex; align-items: center; justify-content: center; background-color: white; }
@@ -67,7 +65,8 @@
         .card-back { background-image: url('card_back.png'); transform: rotateY(360deg); }
         .flipped-1 { transform: rotateY(-180deg); }
         .flipped-2 { transform: rotateY(-360deg); }
-        .final-img { width: 200px; margin-top: 4vh; border-radius: 50%; border: 3px solid #d4af37; box-shadow: 0 0 30px #d4af37; }
+        
+        .final-img { width: 220px; margin-top: 4vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
     </style>
 </head>
 <body>
@@ -77,7 +76,7 @@
     <div class="slide active" id="s1" style="background-image: url('ny_bg1.jpg');">
         
         <div id="video-container" onclick="playIceVideo()">
-            <img src="frost.png" id="frost-cover"> <video id="ice-video" playsinline muted>
+            <video id="ice-video" playsinline muted>
                 <source src="ice_break.mp4" type="video/mp4">
             </video>
             <div class="frost-hint" id="hint-text">Break the Ice</div>
@@ -119,22 +118,17 @@
         const video = document.getElementById('ice-video');
 
         function playIceVideo() {
-            // 1. Hide hint and show video
             document.getElementById('hint-text').style.display = 'none';
-            document.getElementById('frost-cover').style.display = 'none';
             video.style.display = 'block';
-            
-            // 2. Play Video and Music
             video.play();
             song.play();
 
-            // 3. When video ends, hide the whole container
             video.onended = function() {
-                document.getElementById('video-container').style.transition = "opacity 1s";
+                document.getElementById('video-container').style.transition = "opacity 1.2s";
                 document.getElementById('video-container').style.opacity = "0";
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
-                }, 1000);
+                }, 1200);
             };
         }
 
