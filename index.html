@@ -118,23 +118,27 @@
         const bgVideoS1 = document.getElementById('bg-video-s1');
 
         function playIceVideo() {
+            // Hide the initial button
             document.getElementById('hint-img').style.display = 'none';
             
-            // Force Background Video to Play with Sound
-            bgVideoS1.muted = false;
-            bgVideoS1.play();
-
-            // Force Ice Break Video to Play with Sound
+            // 1. Play ONLY the Ice Break Video with sound
             iceVideo.style.display = 'block';
             iceVideo.muted = false;
             iceVideo.play();
-            
-            // Play Main Music
-            mainMusic.play();
 
+            // 2. When the ice break video ends...
             iceVideo.onended = function() {
+                // Start the background video and sound
+                bgVideoS1.muted = false;
+                bgVideoS1.play();
+                
+                // Start the master music
+                mainMusic.play();
+
+                // Fade out the black container
                 document.getElementById('video-container').style.transition = "opacity 1.2s";
                 document.getElementById('video-container').style.opacity = "0";
+                
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
                     const content = document.getElementById('s1-content');
