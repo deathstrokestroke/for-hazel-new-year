@@ -85,7 +85,10 @@
         </div>
     </div>
 
-    <div class="slide" id="s3" style="background-image: url('ny_bg3.jpg');">
+    <div class="slide" id="s3">
+        <video loop playsinline id="bg-video-s3" class="bg-video">
+            <source src="ny_bg3.mp4" type="video/mp4">
+        </video>
         <div class="content-layer">
             <div class="card-container" onclick="flipCard()">
                 <div class="card-inner" id="inner">
@@ -119,6 +122,7 @@
         const iceVideo = document.getElementById('ice-video');
         const bgVideoS1 = document.getElementById('bg-video-s1');
         const bgVideoS2 = document.getElementById('bg-video-s2');
+        const bgVideoS3 = document.getElementById('bg-video-s3');
 
         function playIceVideo() {
             document.getElementById('hint-img').style.display = 'none';
@@ -127,11 +131,8 @@
             iceVideo.play();
 
             iceVideo.onended = function() {
-                // Start Slide 1 Background Video Sound
                 bgVideoS1.muted = false;
                 bgVideoS1.play();
-                
-                // If you have a general music track, play it here
                 if(mainMusic) mainMusic.play();
 
                 document.getElementById('video-container').style.transition = "opacity 1.2s";
@@ -147,25 +148,26 @@
         }
 
         function goToSlide(n) {
-            // 1. Stop all current video sounds
-            bgVideoS1.pause();
-            bgVideoS1.muted = true;
-            
-            bgVideoS2.pause();
-            bgVideoS2.muted = true;
+            // STOP ALL VIDEOS
+            const allVideos = [bgVideoS1, bgVideoS2, bgVideoS3];
+            allVideos.forEach(v => {
+                v.pause();
+                v.muted = true;
+            });
 
-            // 2. Hide all slides and show the new one
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
 
-            // 3. Play sound for the specific slide if it's Slide 2
+            // START VIDEO FOR NEW SLIDE
             if(n === 2) {
                 bgVideoS2.muted = false;
                 bgVideoS2.play();
+            } else if(n === 3) {
+                bgVideoS3.muted = false;
+                bgVideoS3.play();
+            } else if(n === 4) {
+                startCounter();
             }
-
-            // 4. If it's the final slide, start counter
-            if(n === 4) startCounter();
         }
 
         function releaseLantern(e) {
