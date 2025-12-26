@@ -55,18 +55,14 @@
 </head>
 <body>
 
-    <audio id="nySong" loop><source src="music.mp3" type="audio/mpeg"></audio>
-
     <div class="slide active" id="s1">
         <video loop playsinline id="bg-video-s1" class="bg-video">
             <source src="ny_bg1.mp4" type="video/mp4">
         </video>
-
         <div id="video-container">
             <video id="ice-video" playsinline><source src="ice_break.mp4" type="video/mp4"></video>
             <img src="btn_ice.png" class="custom-img-btn" id="hint-img" onclick="playIceVideo()" style="width: 130px;">
         </div>
-
         <div id="s1-content" class="content-layer" style="display:none; opacity:0; transition: 1.5s;">
             <h1 class="ny-text">hi haze ❤</h1>
             <p class="sub-text">2025 is behind us. A fresh, clean world is waiting for you.</p>
@@ -108,7 +104,10 @@
         </div>
     </div>
 
-    <div class="slide" id="s4" style="background-image: url('ny_bg4.jpg');">
+    <div class="slide" id="s4">
+        <video loop playsinline id="bg-video-s4" class="bg-video">
+            <source src="ny_bg4.mp4" type="video/mp4">
+        </video>
         <div class="content-layer">
             <h1 class="ny-text" id="count-text">365 Days</h1>
             <img src="final_visual.png" class="final-img">
@@ -118,22 +117,23 @@
 
     <script>
         let cardStep = 0;
-        const mainMusic = document.getElementById('nySong');
         const iceVideo = document.getElementById('ice-video');
-        const bgVideoS1 = document.getElementById('bg-video-s1');
-        const bgVideoS2 = document.getElementById('bg-video-s2');
-        const bgVideoS3 = document.getElementById('bg-video-s3');
+        const bgVideos = {
+            1: document.getElementById('bg-video-s1'),
+            2: document.getElementById('bg-video-s2'),
+            3: document.getElementById('bg-video-s3'),
+            4: document.getElementById('bg-video-s4')
+        };
 
         function playIceVideo() {
             document.getElementById('hint-img').style.display = 'none';
             iceVideo.style.display = 'block';
-            iceVideo.muted = false;
+            iceVideo.muted = false; // Video sound ON
             iceVideo.play();
 
             iceVideo.onended = function() {
-                bgVideoS1.muted = false;
-                bgVideoS1.play();
-                if(mainMusic) mainMusic.play();
+                bgVideos[1].muted = false; // Video 1 sound ON
+                bgVideos[1].play();
 
                 document.getElementById('video-container').style.transition = "opacity 1.2s";
                 document.getElementById('video-container').style.opacity = "0";
@@ -148,26 +148,22 @@
         }
 
         function goToSlide(n) {
-            // STOP ALL VIDEOS
-            const allVideos = [bgVideoS1, bgVideoS2, bgVideoS3];
-            allVideos.forEach(v => {
-                v.pause();
-                v.muted = true;
+            // Stop and Mute ALL Background Videos
+            Object.values(bgVideos).forEach(v => {
+                if(v) { v.pause(); v.muted = true; }
             });
 
+            // Switch Active Slide
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
 
-            // START VIDEO FOR NEW SLIDE
-            if(n === 2) {
-                bgVideoS2.muted = false;
-                bgVideoS2.play();
-            } else if(n === 3) {
-                bgVideoS3.muted = false;
-                bgVideoS3.play();
-            } else if(n === 4) {
-                startCounter();
+            // Play the Video for the current slide with ITS OWN sound
+            if(bgVideos[n]) {
+                bgVideos[n].muted = false; // UNMUTE the video
+                bgVideos[n].play();
             }
+
+            if(n === 4) startCounter();
         }
 
         function releaseLantern(e) {
@@ -204,7 +200,10 @@
             const interval = setInterval(() => {
                 count += 5;
                 display.innerText = count + " Days";
-                if(count >= 365) { clearInterval(interval); display.innerText = "365 Days. One Love."; }
+                if(count >= 365) { 
+                    clearInterval(interval); 
+                    display.innerText = "365 Days. One Love."; 
+                }
             }, 40);
         }
     </script>
