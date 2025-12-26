@@ -53,7 +53,7 @@
             opacity: 0;
             transform: scale(0.8);
             animation: emerge 1.5s forwards ease-out;
-            animation-delay: 2.2s; 
+            animation-delay: 3s; /* Adjusted for longer text typing */
         }
         @keyframes emerge {
             to { opacity: 1; transform: scale(1); }
@@ -62,26 +62,24 @@
 
         .content-layer { z-index: 10; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
         
-        /* Heading: Alex Brush */
         .ny-text { 
             font-family: 'Alex Brush', cursive;
             font-size: 4.2rem; color: #fff; text-shadow: 0 0 15px #d4af37; 
             margin-top: 8vh; line-height: 1.1; min-height: 1.2em;
         }
         
-        /* Sub-text: Playfair Display Bold */
         .sub-text { 
             font-family: 'Playfair Display', serif;
             font-weight: 700;
-            font-size: 1.3rem; color: #f0e68c; max-width: 90%; 
+            font-size: 1.15rem; color: #f0e68c; max-width: 90%; 
             margin-top: 15px; line-height: 1.5; padding: 20px; 
-            border-radius: 12px; background: rgba(0,0,0,0.5);
+            border-radius: 12px; background: rgba(0,0,0,0.55);
             min-height: 3.5em;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
         
         /* Typing Animation Styles */
-        .word { opacity: 0; display: inline-block; transition: opacity 0.7s ease; margin-right: 6px; }
+        .word { opacity: 0; display: inline-block; transition: opacity 0.5s ease; margin-right: 5px; }
         .word.visible { opacity: 1; }
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
@@ -97,7 +95,6 @@
         
         .final-img { width: 220px; margin-top: 4vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
         
-        /* Bold Counter */
         #count-text { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px #d4af37; }
     </style>
 </head>
@@ -113,7 +110,7 @@
         </div>
         <div id="s1-content" class="content-layer" style="display:none;">
             <h1 class="ny-text" id="head-s1">Hi Haze ❤</h1>
-            <p class="sub-text" id="type-s1">2025 is behind us. A fresh, clean world is waiting for you.</p>
+            <p class="sub-text" id="type-s1">2025 brought many days and many changes, but you know what the best part was — sharing another year with you. Even from afar, you made it special just by being you. This year wasn’t easy for us. You lost your mom at the beginning of the year, and I lost my job in the middle of it, yet we still stood strong together. You inspire me more than you know, and I’ve learned so much from you this year. I made this message so we can enter 2026 together, and I hope the next year keeps us close and full of love.</p>
             <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 240px; margin-top: 20px;">
         </div>
     </div>
@@ -159,7 +156,7 @@
         piano.volume = 0.4;
         const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 3: document.getElementById('bg-video-s3'), 4: document.getElementById('bg-video-s4') };
 
-        function typeText(elementId, delay = 0) {
+        function typeText(elementId, delay = 0, speed = 200) {
             const el = document.getElementById(elementId);
             const text = el.innerText;
             el.innerHTML = '';
@@ -171,7 +168,7 @@
                     span.innerText = word;
                     span.className = 'word';
                     el.appendChild(span);
-                    setTimeout(() => span.classList.add('visible'), i * 250);
+                    setTimeout(() => span.classList.add('visible'), i * speed);
                 });
             }, delay);
         }
@@ -189,8 +186,8 @@
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
                     document.getElementById('s1-content').style.display = 'flex';
-                    typeText('head-s1');
-                    typeText('type-s1', 1200);
+                    typeText('head-s1', 0, 250);
+                    typeText('type-s1', 1200, 150); // Speeded up slightly because it's long
                 }, 1500);
             };
         }
@@ -208,13 +205,13 @@
 
             if(n === 2) {
                 setTimeout(() => {
-                    typeText('head-s2');
-                    typeText('type-s2', 1500);
+                    typeText('head-s2', 0, 250);
+                    typeText('type-s2', 1500, 200);
                 }, 1000);
             }
             if(n === 4) {
                 startCounter();
-                setTimeout(() => typeText('type-s4', 500), 1000);
+                setTimeout(() => typeText('type-s4', 500, 250), 1000);
             }
         }
 
@@ -224,7 +221,7 @@
             const finalBtn = document.getElementById('final-trigger');
             if(cardStep == 1) { 
                 el.className = 'card-inner flipped-1'; 
-                setTimeout(() => typeText('type-card'), 800);
+                setTimeout(() => typeText('type-card', 0, 200), 800);
             } 
             else if(cardStep == 2) {
                 el.className = 'card-inner flipped-2';
