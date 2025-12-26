@@ -45,7 +45,7 @@
         }
         #ice-video { width: 100%; height: 100%; object-fit: cover; display: none; }
 
-        /* Button Fade-In "From Inside" Effect */
+        /* Button Fade-In Effect */
         .custom-img-btn {
             cursor: pointer; 
             filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
@@ -53,7 +53,7 @@
             opacity: 0;
             transform: scale(0.8);
             animation: emerge 1.5s forwards ease-out;
-            animation-delay: 5s; /* Long delay to allow for deep reading */
+            animation-delay: 6s; /* Longer delay for longer reading time */
         }
         @keyframes emerge {
             to { opacity: 1; transform: scale(1); }
@@ -65,17 +65,17 @@
         .ny-text { 
             font-family: 'Alex Brush', cursive;
             font-size: 4.2rem; color: #fff; text-shadow: 0 0 15px #d4af37; 
-            margin-top: 8vh; line-height: 1.1; min-height: 1.2em;
+            margin-top: 6vh; line-height: 1.1; min-height: 1.2em;
         }
         
         .sub-text { 
             font-family: 'Playfair Display', serif;
             font-weight: 700;
-            font-size: 1.1rem; color: #f0e68c; max-width: 90%; 
-            margin-top: 15px; line-height: 1.5; padding: 20px; 
-            border-radius: 12px; background: rgba(0,0,0,0.55);
+            font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
+            margin-top: 15px; line-height: 1.45; padding: 18px; 
+            border-radius: 12px; background: rgba(0,0,0,0.6);
             min-height: 3.5em;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
 
         .instruction {
@@ -83,13 +83,13 @@
             color: #d4af37;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-top: 10px;
+            margin-top: 8px;
             opacity: 0;
             transition: opacity 1s ease;
         }
         
         /* Typing Animation Styles */
-        .word { opacity: 0; display: inline-block; transition: opacity 0.5s ease; margin-right: 5px; }
+        .word { opacity: 0; display: inline-block; transition: opacity 0.5s ease; margin-right: 4px; }
         .word.visible { opacity: 1; }
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
@@ -103,9 +103,9 @@
         .flipped-1 { transform: rotateY(-180deg); }
         .flipped-2 { transform: rotateY(-360deg); }
         
-        .final-img { width: 220px; margin-top: 4vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
+        .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
         
-        #count-text { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px #d4af37; }
+        #count-text { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px #d4af37; margin-top: 5vh; }
     </style>
 </head>
 <body>
@@ -142,13 +142,13 @@
                 <div class="card-inner" id="inner">
                     <div class="card-face card-front"></div>
                     <div class="card-face card-inside">
-                        <p id="type-card" style="color:#111; font-size: 1.25rem; font-family: 'Playfair Display', serif; font-weight: 700;">Happy New Year, Haze. May 2026 bring your family healing and peace. You are my everything.</p>
+                        <p id="type-card" style="color:#111; font-size: 1.2rem; font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;">Happy New Year, Haze. May 2026 bring your family healing and peace. You are my everything.</p>
                     </div>
                     <div class="card-face card-back"></div>
                 </div>
             </div>
-            <img src="btn_flip.png" id="flip-btn" class="custom-img-btn" onclick="flipCard()" style="width: 160px; margin-top: 30px;">
-            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
+            <img src="btn_flip.png" id="flip-btn" class="custom-img-btn" onclick="flipCard()" style="width: 160px; margin-top: 30px; animation-delay: 1s;">
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; animation-delay: 0s;">
         </div>
     </div>
 
@@ -157,7 +157,7 @@
         <div class="content-layer">
             <h1 class="ny-text" id="count-text">0 Days</h1>
             <img src="final_visual.png" class="final-img">
-            <p class="sub-text" id="type-s4">✨ 2026 is our sanctuary. ✨</p>
+            <p class="sub-text" id="type-s4">As we step into 2026, I just want you to know… being with you, even from afar, makes my world brighter every single day. I can’t promise every day will be perfect, but I promise to keep loving you, laughing with you, and cherishing every little moment we share. I can’t wait for the adventures we’ll have, the silly moments that make us laugh until our stomachs hurt, and the quiet times where it’s just you and me. You are my heart, my favorite thought, and the best part of every day. Here’s to a year where our love grows stronger, our dreams get closer, and maybe… just maybe… the distance between us fades a little more. I love you, Haze, more than words can ever say — and I’m so lucky it’s with you I get to enter this New Year.</p>
         </div>
     </div>
 
@@ -167,7 +167,7 @@
         piano.volume = 0.4;
         const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 3: document.getElementById('bg-video-s3'), 4: document.getElementById('bg-video-s4') };
 
-        function typeText(elementId, delay = 0, speed = 200) {
+        function typeText(elementId, delay = 0, speed = 180) {
             const el = document.getElementById(elementId);
             const text = el.innerText;
             el.innerHTML = '';
@@ -198,7 +198,7 @@
                     document.getElementById('video-container').style.display = "none";
                     document.getElementById('s1-content').style.display = 'flex';
                     typeText('head-s1', 0, 250);
-                    typeText('type-s1', 1200, 150);
+                    typeText('type-s1', 1200, 130);
                 }, 1500);
             };
         }
@@ -219,13 +219,13 @@
                     typeText('head-s2', 0, 250);
                     setTimeout(() => {
                         document.getElementById('instruct-s2').style.opacity = "1";
-                        typeText('type-s2', 1000, 150);
+                        typeText('type-s2', 1000, 130);
                     }, 1200);
                 }, 1000);
             }
             if(n === 4) {
                 startCounter();
-                setTimeout(() => typeText('type-s4', 500, 250), 1000);
+                setTimeout(() => typeText('type-s4', 500, 130), 1500);
             }
         }
 
@@ -235,7 +235,7 @@
             const finalBtn = document.getElementById('final-trigger');
             if(cardStep == 1) { 
                 el.className = 'card-inner flipped-1'; 
-                setTimeout(() => typeText('type-card', 0, 200), 800);
+                setTimeout(() => typeText('type-card', 0, 180), 800);
             } 
             else if(cardStep == 2) {
                 el.className = 'card-inner flipped-2';
@@ -251,7 +251,7 @@
                 count += 1;
                 display.innerText = count + " Days";
                 if(count >= 365) { clearInterval(interval); display.innerText = "365 Days. One Love."; }
-            }, 40); 
+            }, 30); 
         }
 
         function releaseLantern(e) {
