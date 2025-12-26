@@ -16,21 +16,18 @@
         }
         .active { display: flex !important; }
 
-        /* Background Video Styling */
         .bg-video { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             object-fit: cover; z-index: 1;
             image-rendering: -webkit-optimize-contrast;
         }
 
-        /* Ice Break Layer */
         #video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 300; background: #000; display: flex; align-items: center; justify-content: center;
         }
         #ice-video { width: 100%; height: 100%; object-fit: cover; display: none; }
 
-        /* Gold Buttons */
         .custom-img-btn {
             cursor: pointer; transition: transform 0.2s ease, opacity 1s ease;
             filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
@@ -78,7 +75,7 @@
     </div>
 
     <div class="slide" id="s2" onclick="releaseLantern(event)">
-        <video autoplay muted loop playsinline class="bg-video">
+        <video loop playsinline id="bg-video-s2" class="bg-video">
             <source src="ny_bg2.mp4" type="video/mp4">
         </video>
         <div class="content-layer">
@@ -89,21 +86,23 @@
     </div>
 
     <div class="slide" id="s3" style="background-image: url('ny_bg3.jpg');">
-        <div class="card-container" onclick="flipCard()">
-            <div class="card-inner" id="inner">
-                <div class="card-face card-front"></div>
-                <div class="card-face card-inside">
-                    <p style="color:#111; font-weight:bold; font-size: 1.1rem;">
-                        Happy New Year, Haze. <br><br>
-                        May 2026 bring your family healing and peace. <br><br>
-                        You are my everything.
-                    </p>
+        <div class="content-layer">
+            <div class="card-container" onclick="flipCard()">
+                <div class="card-inner" id="inner">
+                    <div class="card-face card-front"></div>
+                    <div class="card-face card-inside">
+                        <p style="color:#111; font-weight:bold; font-size: 1.1rem;">
+                            Happy New Year, Haze. <br><br>
+                            May 2026 bring your family healing and peace. <br><br>
+                            You are my everything.
+                        </p>
+                    </div>
+                    <div class="card-face card-back"></div>
                 </div>
-                <div class="card-face card-back"></div>
             </div>
+            <img src="btn_flip.png" id="flip-btn" class="custom-img-btn" onclick="flipCard()" style="width: 160px; margin-top: 30px;">
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; opacity: 0;">
         </div>
-        <img src="btn_flip.png" id="flip-btn" class="custom-img-btn" onclick="flipCard()" style="width: 160px; margin-top: 30px;">
-        <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; opacity: 0;">
     </div>
 
     <div class="slide" id="s4" style="background-image: url('ny_bg4.jpg');">
@@ -119,18 +118,21 @@
         const mainMusic = document.getElementById('nySong');
         const iceVideo = document.getElementById('ice-video');
         const bgVideoS1 = document.getElementById('bg-video-s1');
+        const bgVideoS2 = document.getElementById('bg-video-s2');
 
         function playIceVideo() {
             document.getElementById('hint-img').style.display = 'none';
-            
             iceVideo.style.display = 'block';
             iceVideo.muted = false;
             iceVideo.play();
 
             iceVideo.onended = function() {
+                // Start Slide 1 Background Video Sound
                 bgVideoS1.muted = false;
                 bgVideoS1.play();
-                mainMusic.play();
+                
+                // If you have a general music track, play it here
+                if(mainMusic) mainMusic.play();
 
                 document.getElementById('video-container').style.transition = "opacity 1.2s";
                 document.getElementById('video-container').style.opacity = "0";
@@ -145,8 +147,24 @@
         }
 
         function goToSlide(n) {
+            // 1. Stop all current video sounds
+            bgVideoS1.pause();
+            bgVideoS1.muted = true;
+            
+            bgVideoS2.pause();
+            bgVideoS2.muted = true;
+
+            // 2. Hide all slides and show the new one
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
+
+            // 3. Play sound for the specific slide if it's Slide 2
+            if(n === 2) {
+                bgVideoS2.muted = false;
+                bgVideoS2.play();
+            }
+
+            // 4. If it's the final slide, start counter
             if(n === 4) startCounter();
         }
 
