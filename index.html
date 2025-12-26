@@ -2,163 +2,179 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Sanctuary 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Haze | 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { 
-            width: 100%; height: 100%; 
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
             background-color: #000; 
-            overflow: hidden; 
+            color: #d4af37; 
             font-family: 'Cinzel', serif; 
+            overflow: hidden; 
+            width: 100vw; height: 100vh;
         }
 
         .slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            background-size: cover;
-            background-position: center;
-            text-align: center;
-            flex-direction: column;
+            height: 100vh; width: 100vw;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            background-size: cover; background-position: center;
+            position: absolute; text-align: center; padding: 25px;
         }
 
-        .active { display: flex; animation: fadeIn 1.5s forwards; }
-
+        .active { display: flex !important; animation: fadeIn 1.5s forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* VIDEO & CUSTOM BUTTON 1 */
+        #video-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 200; background: #000;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        #ice-video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: none; 
+            transform: scale(1.1);
+        }
 
         .img-btn {
             cursor: pointer;
             transition: transform 0.3s ease, filter 0.3s ease;
-            z-index: 100;
             filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
-            margin-top: 20px;
+            z-index: 210;
         }
         .img-btn:active { transform: scale(0.92); }
 
-        .ny-text { color: #d4af37; font-size: 2.2rem; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-        .sub-text { color: #fff; font-size: 1rem; max-width: 80%; line-height: 1.6; margin: 15px 0; }
-
-        /* Video Layer */
-        #video-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 200; background: black; display: flex; justify-content: center; align-items: center;
-        }
-        video { width: 100%; height: 100%; object-fit: cover; }
-
+        /* Message Styling */
+        .ny-text { font-weight: bold; color: #fff; text-shadow: 0 0 10px #d4af37; margin-bottom: 10px; }
+        .sub-text { font-size: 1rem; color: #f0e68c; max-width: 85%; margin-bottom: 25px; line-height: 1.5; }
+        
         /* Lanterns */
-        .lantern { position: absolute; pointer-events: none; animation: floatUp 7s linear forwards; }
-        @keyframes floatUp {
-            0% { transform: translateY(110vh); opacity: 1; }
-            100% { transform: translateY(-20vh); opacity: 0; }
-        }
-
-        /* Card Container */
-        .card {
-            background: rgba(20, 20, 20, 0.8);
-            padding: 40px 20px;
-            border: 1px solid #d4af37;
-            border-radius: 15px;
-            width: 85%;
-            backdrop-filter: blur(12px);
-        }
-
-        /* Slide 4 Floating Hearts/Stars */
-        .sparkle {
-            position: absolute; background: white; border-radius: 50%;
-            animation: twinkle 3s infinite ease-in-out;
-        }
-        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
+        
+        /* Card System */
+        .card-container { width: 300px; height: 400px; perspective: 1000px; margin-bottom: 20px; }
+        .card-inner { width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; position: relative; }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border: 2px solid #d4af37; border-radius: 15px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; background-size: cover; background-color: #111; }
+        .card-front { background-image: url('card_front.png'); }
+        .card-inside { transform: rotateY(180deg); color: #fff; }
+        .flipped-1 { transform: rotateY(-180deg); }
+        
+        .final-img { width: 220px; border-radius: 15px; border: 1px solid #d4af37; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="slide active" id="s1">
+    <audio id="nySong" loop><source src="music.mp3" type="audio/mpeg"></audio>
+
+    <div class="slide active" id="s1" style="background-image: url('ny_bg1.jpg');">
         <div id="video-container">
-            <video id="ice-video" playsinline muted style="display:none;">
+            <video id="ice-video" playsinline muted>
                 <source src="ice_break.mp4" type="video/mp4">
             </video>
-            <img src="btn_ice.png" id="btn-ice" class="img-btn" onclick="playIceVideo()" style="width: 260px;">
+            <img src="btn_ice.png" class="img-btn" id="melt-btn" onclick="playIceVideo()" style="width: 260px;">
         </div>
 
-        <div id="s1-content" style="display:none; opacity:0;">
+        <div id="s1-content" style="display:none; opacity:0; transition: 1.5s; z-index: 10;">
             <h1 class="ny-text">hi haze ❤</h1>
-            <p class="sub-text">2025 is behind us. A fresh world is waiting.</p>
-            <img src="btn_step_into.png" class="img-btn" onclick="goToSlide(2)" style="width: 270px;">
+            <p class="sub-text">2025 is behind us. A fresh, clean world is waiting.</p>
+            <img src="btn_step_into.png" class="img-btn" onclick="goToSlide(2)" style="width: 280px;">
         </div>
     </div>
 
-    <div class="slide" id="s2" style="background-image: url('ny_bg2.jpg');" onclick="createLantern(event)">
+    <div class="slide" id="s2" style="background-image: url('ny_bg2.jpg');" onclick="releaseLantern(event)">
         <h1 class="ny-text">A Year of Light</h1>
-        <p class="sub-text">Tap the sky to release a wish.</p>
-        <img src="btn_step_into.png" class="img-btn" onclick="goToSlide(3)" style="width: 250px; filter: hue-rotate(90deg);">
+        <p class="sub-text">Tap the sky to release a lantern. Every one is a promise I'm making to you.</p>
+        <img src="btn_step_into.png" class="img-btn" onclick="goToSlide(3)" style="width: 250px; filter: hue-rotate(150deg);">
     </div>
 
     <div class="slide" id="s3" style="background-image: url('ny_bg3.jpg');">
-        <div class="card">
-            <h1 class="ny-text">My Letter to You</h1>
-            <p class="sub-text">Write your deep, heartfelt message here. Explain why 2026 will be your best year together.</p>
-            <img src="btn_step_into.png" class="img-btn" onclick="goToSlide(4)" style="width: 220px; filter: grayscale(1);">
+        <div class="card-container" onclick="flipCard()">
+            <div class="card-inner" id="inner">
+                <div class="card-face card-front">
+                    <p>Tap to Open</p>
+                </div>
+                <div class="card-face card-inside">
+                    <p>Happy New Year. May 2026 bring your family healing and peace. You are my everything.</p>
+                </div>
+            </div>
         </div>
+        <img src="btn_step_into.png" class="img-btn" onclick="goToSlide(4)" style="width: 220px; filter: grayscale(1);">
     </div>
 
     <div class="slide" id="s4" style="background-image: url('ny_bg4.jpg');">
-        <h1 class="ny-text">Welcome Home</h1>
-        <p class="sub-text">This is our space. No rush, no noise. Just us.</p>
-        <p class="ny-text" style="font-size: 1.2rem;">Happy New Year, Haze.</p>
-        </div>
+        <h1 class="ny-text" id="count-text">0 Days</h1>
+        <img src="final_visual.png" class="final-img">
+        <p class="sub-text">✨ 2026 is our sanctuary. ✨</p>
+    </div>
 
     <script>
+        let cardStep = 0;
+        const song = document.getElementById('nySong');
+        const video = document.getElementById('ice-video');
+
         function playIceVideo() {
-            const v = document.getElementById('ice-video');
-            document.getElementById('btn-ice').style.display = 'none';
-            v.style.display = 'block';
-            v.play();
-            v.onended = () => {
+            // Hide custom button and show/play video
+            document.getElementById('melt-btn').style.display = 'none';
+            video.style.display = 'block';
+            video.play();
+            song.play();
+
+            video.onended = function() {
+                document.getElementById('video-container').style.transition = "opacity 1.2s";
                 document.getElementById('video-container').style.opacity = "0";
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
-                    const c = document.getElementById('s1-content');
-                    c.style.display = 'block';
-                    setTimeout(() => c.style.opacity = "1", 50);
-                }, 1000);
+                    // Reveal the "Hi Haze" content and the second button
+                    const content = document.getElementById('s1-content');
+                    content.style.display = 'flex';
+                    content.style.flexDirection = 'column';
+                    content.style.alignItems = 'center';
+                    setTimeout(() => { content.style.opacity = "1"; }, 50);
+                }, 1200);
             };
         }
 
         function goToSlide(n) {
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-            const nextSlide = document.getElementById('s' + n);
-            nextSlide.classList.add('active');
-            
-            // If it's slide 4, add some sparkles
-            if(n === 4) { addSparkles(); }
+            document.getElementById('s' + n).classList.add('active');
+            if(n === 4) startCounter();
         }
 
-        function createLantern(e) {
-            const l = document.createElement('div');
-            l.className = 'lantern';
-            l.style.left = e.clientX + 'px';
-            l.innerHTML = '🏮';
-            l.style.fontSize = '30px';
-            document.getElementById('s2').appendChild(l);
-            setTimeout(() => l.remove(), 7000);
+        function releaseLantern(e) {
+            const l = document.createElement('img');
+            l.src = 'lantern.png'; 
+            l.className = 'lantern-img';
+            l.style.left = (e.clientX - 30) + 'px';
+            l.style.top = e.clientY + 'px';
+            document.body.appendChild(l);
+            l.animate([
+                { transform: 'translateY(0) scale(1)', opacity: 1 },
+                { transform: `translateY(-110vh) scale(0.5)`, opacity: 0 }
+            ], { duration: 6000 });
+            setTimeout(() => l.remove(), 6000);
         }
 
-        function addSparkles() {
-            for(let i=0; i<20; i++) {
-                let s = document.createElement('div');
-                s.className = 'sparkle';
-                s.style.width = s.style.height = Math.random() * 5 + 'px';
-                s.style.left = Math.random() * 100 + 'vw';
-                s.style.top = Math.random() * 100 + 'vh';
-                s.style.animationDelay = Math.random() * 2 + 's';
-                document.getElementById('s4').appendChild(s);
-            }
+        function flipCard() {
+            const el = document.getElementById('inner');
+            cardStep = (cardStep === 0) ? 1 : 0;
+            el.className = cardStep === 1 ? 'card-inner flipped-1' : 'card-inner';
+        }
+
+        function startCounter() {
+            let count = 0;
+            const display = document.getElementById('count-text');
+            const interval = setInterval(() => {
+                count += 5;
+                display.innerText = count + " Days";
+                if(count >= 365) {
+                    clearInterval(interval);
+                    display.innerText = "365 Days. 1 Love.";
+                }
+            }, 40);
         }
     </script>
 </body>
