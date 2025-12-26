@@ -16,15 +16,19 @@
         }
         .active { display: flex !important; }
 
-        /* Background Video */
-        .bg-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        /* Background Video - Adjusted for Laptop/Desktop sharpness */
+        .bg-video { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            object-fit: cover; z-index: 1;
+            image-rendering: -webkit-optimize-contrast; /* Sharpens video on some browsers */
+        }
 
         /* Ice Break Layer */
         #video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 300; background: #000; display: flex; align-items: center; justify-content: center;
         }
-        #ice-video { width: 100%; height: 100%; object-fit: cover; display: none; transform: scale(1.1); }
+        #ice-video { width: 100%; height: 100%; object-fit: cover; display: none; }
 
         /* Gold Buttons */
         .custom-img-btn {
@@ -34,15 +38,12 @@
         }
         .custom-img-btn:active { transform: scale(0.95); }
 
-        /* Content Layers */
         .content-layer { z-index: 10; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
         .ny-text { font-weight: bold; font-style: italic; color: #fff; text-shadow: 0 0 10px #d4af37; line-height: 1.3; margin-top: 8vh; }
         .sub-text { font-size: 1.1rem; color: #f0e68c; max-width: 90%; margin-top: 15px; line-height: 1.6; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.6); border: 1px solid rgba(212, 175, 55, 0.2); }
         
-        /* Lanterns */
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* Card Flip */
         .card-container { width: 300px; height: 420px; perspective: 1000px; margin-top: 20px; z-index: 20; }
         .card-inner { width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; position: relative; }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border: 3px solid #d4af37; border-radius: 15px; display: flex; align-items: center; justify-content: center; background-color: #fff; }
@@ -60,11 +61,15 @@
     <audio id="nySong" loop><source src="music.mp3" type="audio/mpeg"></audio>
 
     <div class="slide active" id="s1">
-        <video autoplay muted loop playsinline class="bg-video"><source src="ny_bg1.mp4" type="video/mp4"></video>
+        <video loop playsinline id="bg-video-s1" class="bg-video">
+            <source src="ny_bg1.mp4" type="video/mp4">
+        </video>
+
         <div id="video-container">
             <video id="ice-video" playsinline muted><source src="ice_break.mp4" type="video/mp4"></video>
             <img src="btn_ice.png" class="custom-img-btn" id="hint-img" onclick="playIceVideo()" style="width: 130px;">
         </div>
+
         <div id="s1-content" class="content-layer" style="display:none; opacity:0; transition: 1.5s;">
             <h1 class="ny-text">hi haze ❤</h1>
             <p class="sub-text">2025 is behind us. A fresh, clean world is waiting for you.</p>
@@ -108,15 +113,26 @@
 
     <script>
         let cardStep = 0;
-        const song = document.getElementById('nySong');
-        const video = document.getElementById('ice-video');
+        const mainMusic = document.getElementById('nySong');
+        const iceVideo = document.getElementById('ice-video');
+        const bgVideoS1 = document.getElementById('bg-video-s1');
 
         function playIceVideo() {
+            // Hide the initial button
             document.getElementById('hint-img').style.display = 'none';
-            video.style.display = 'block';
-            video.play();
-            song.play();
-            video.onended = function() {
+            
+            // 1. Play the background video with sound now that user clicked
+            bgVideoS1.play();
+            bgVideoS1.muted = false;
+
+            // 2. Play the ice video overlay
+            iceVideo.style.display = 'block';
+            iceVideo.play();
+            
+            // 3. Optional music
+            mainMusic.play();
+
+            iceVideo.onended = function() {
                 document.getElementById('video-container').style.transition = "opacity 1.2s";
                 document.getElementById('video-container').style.opacity = "0";
                 setTimeout(() => {
