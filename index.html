@@ -55,6 +55,8 @@
 </head>
 <body>
 
+    <audio id="bgPiano" loop><source src="bg_piano.mp3" type="audio/mpeg"></audio>
+
     <div class="slide active" id="s1">
         <video loop playsinline id="bg-video-s1" class="bg-video">
             <source src="ny_bg1.mp4" type="video/mp4">
@@ -117,6 +119,9 @@
 
     <script>
         let cardStep = 0;
+        const piano = document.getElementById('bgPiano');
+        piano.volume = 0.2; // Sets piano sound to 20% volume
+
         const iceVideo = document.getElementById('ice-video');
         const bgVideos = {
             1: document.getElementById('bg-video-s1'),
@@ -128,11 +133,11 @@
         function playIceVideo() {
             document.getElementById('hint-img').style.display = 'none';
             iceVideo.style.display = 'block';
-            iceVideo.muted = false; // Video sound ON
+            iceVideo.muted = false;
             iceVideo.play();
 
             iceVideo.onended = function() {
-                bgVideos[1].muted = false; // Video 1 sound ON
+                bgVideos[1].muted = false;
                 bgVideos[1].play();
 
                 document.getElementById('video-container').style.transition = "opacity 1.2s";
@@ -153,13 +158,21 @@
                 if(v) { v.pause(); v.muted = true; }
             });
 
+            // Handle Piano Background Sound logic
+            if (n === 2 || n === 3) {
+                if (piano.paused) piano.play();
+            } else {
+                piano.pause();
+                piano.currentTime = 0; // Resets piano when she leaves slide 3
+            }
+
             // Switch Active Slide
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
 
-            // Play the Video for the current slide with ITS OWN sound
+            // Play the Video for the current slide with sound
             if(bgVideos[n]) {
-                bgVideos[n].muted = false; // UNMUTE the video
+                bgVideos[n].muted = false;
                 bgVideos[n].play();
             }
 
