@@ -8,7 +8,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* Apply Alex Brush to the entire body */
         body { 
             background-color: #000; 
             color: #d4af37; 
@@ -18,74 +17,81 @@
             height: 100vh; 
         }
         
+        /* Smooth Slide Blending */
         .slide {
-            height: 100vh; width: 100vw; display: none; flex-direction: column; 
-            align-items: center; justify-content: flex-start; background-size: cover; 
-            background-position: center; position: absolute; text-align: center; padding: 25px;
+            height: 100vh; width: 100vw; 
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: flex-start; 
+            position: absolute; text-align: center; padding: 25px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 2s ease-in-out, visibility 2s;
+            z-index: 1;
         }
-        .active { display: flex !important; }
+        .active { 
+            opacity: 1; 
+            visibility: visible;
+            z-index: 2;
+        }
 
         .bg-video { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             object-fit: cover; z-index: 1;
-            image-rendering: -webkit-optimize-contrast;
         }
 
+        /* Initial Ice Screen */
         #video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 300; background: #000; display: flex; align-items: center; justify-content: center;
         }
         #ice-video { width: 100%; height: 100%; object-fit: cover; display: none; }
 
+        /* Button Fade-In "From Inside" Effect */
         .custom-img-btn {
-            cursor: pointer; transition: transform 0.2s ease, opacity 1s ease;
+            cursor: pointer; 
             filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
             z-index: 310; mix-blend-mode: screen; 
+            opacity: 0;
+            transform: scale(0.8);
+            animation: emerge 1.5s forwards ease-out;
+            animation-delay: 1s; /* Wait for text to start typing */
+        }
+        @keyframes emerge {
+            to { opacity: 1; transform: scale(1); }
         }
         .custom-img-btn:active { transform: scale(0.95); }
 
         .content-layer { z-index: 10; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
         
         .ny-text { 
-            font-size: 3.8rem; 
-            color: #fff; 
-            text-shadow: 0 0 15px #d4af37; 
-            margin-top: 8vh;
-            line-height: 1.1;
+            font-size: 3.8rem; color: #fff; text-shadow: 0 0 15px #d4af37; 
+            margin-top: 8vh; line-height: 1.1;
         }
         
         .sub-text { 
-            font-size: 1.8rem; /* Increased for script readability */
-            color: #f0e68c; 
-            max-width: 90%; 
-            margin-top: 15px; 
-            line-height: 1.3; 
-            padding: 15px; 
-            border-radius: 12px; 
-            background: rgba(0,0,0,0.5); 
-            border: 1px solid rgba(212, 175, 55, 0.2); 
+            font-size: 1.8rem; color: #f0e68c; max-width: 90%; 
+            margin-top: 15px; line-height: 1.3; padding: 15px; 
+            border-radius: 12px; background: rgba(0,0,0,0.4);
+            min-height: 3em;
         }
         
+        /* Word Typing Styles */
+        .word { opacity: 0; display: inline-block; transition: opacity 0.5s ease; margin-right: 8px; }
+        .word.visible { opacity: 1; }
+
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        .card-container { width: 300px; height: 420px; perspective: 1000px; margin-top: 20px; z-index: 20; }
+        .card-container { width: 300px; height: 420px; perspective: 1000px; margin-top: 20px; z-index: 20; opacity:0; animation: emerge 1.5s forwards 0.5s;}
         .card-inner { width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; position: relative; }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border: 3px solid #d4af37; border-radius: 15px; display: flex; align-items: center; justify-content: center; background-color: #fff; }
         .card-front { background-image: url('card_front.png'); background-size: cover; }
-        .card-inside { 
-            background-image: url('card_inside.png'); 
-            background-size: cover; 
-            transform: rotateY(180deg); 
-            padding: 25px; 
-            flex-direction: column; 
-        }
+        .card-inside { background-image: url('card_inside.png'); background-size: cover; transform: rotateY(180deg); padding: 25px; flex-direction: column; }
         .card-back { background-image: url('card_back.png'); background-size: cover; transform: rotateY(360deg); }
         .flipped-1 { transform: rotateY(-180deg); }
         .flipped-2 { transform: rotateY(-360deg); }
         
-        .final-img { width: 220px; margin-top: 4vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
+        .final-img { width: 220px; margin-top: 4vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 2s; }
         
-        /* Specific sizing for the counter on slide 4 */
         #count-text { font-size: 3.2rem; }
     </style>
 </head>
@@ -94,62 +100,50 @@
     <audio id="bgPiano" loop><source src="bg_piano.mp3" type="audio/mpeg"></audio>
 
     <div class="slide active" id="s1">
-        <video loop playsinline id="bg-video-s1" class="bg-video">
-            <source src="ny_bg1.mp4" type="video/mp4">
-        </video>
+        <video loop playsinline id="bg-video-s1" class="bg-video"><source src="ny_bg1.mp4" type="video/mp4"></video>
         <div id="video-container">
             <video id="ice-video" playsinline><source src="ice_break.mp4" type="video/mp4"></video>
-            <img src="btn_ice.png" class="custom-img-btn" id="hint-img" onclick="playIceVideo()" style="width: 130px;">
+            <img src="btn_ice.png" class="custom-img-btn" id="hint-img" onclick="playIceVideo()" style="width: 130px; opacity: 1; transform: scale(1); animation: none;">
         </div>
-        <div id="s1-content" class="content-layer" style="display:none; opacity:0; transition: 1.5s;">
+        <div id="s1-content" class="content-layer" style="display:none;">
             <h1 class="ny-text">Hi Haze ❤</h1>
-            <p class="sub-text">2025 is behind us. A fresh, clean world is waiting for you.</p>
+            <p class="sub-text" id="type-s1">2025 is behind us. A fresh, clean world is waiting for you.</p>
             <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 240px; margin-top: 20px;">
         </div>
     </div>
 
     <div class="slide" id="s2" onclick="releaseLantern(event)">
-        <video loop playsinline id="bg-video-s2" class="bg-video">
-            <source src="ny_bg2.mp4" type="video/mp4">
-        </video>
+        <video loop playsinline id="bg-video-s2" class="bg-video"><source src="ny_bg2.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <h1 class="ny-text">A Year of Light</h1>
-            <p class="sub-text">Tap the sky to release a lantern. Every light is a promise I'm making to you.</p>
+            <p class="sub-text" id="type-s2">Tap the sky to release a lantern. Every light is a promise I'm making to you.</p>
             <img src="btn_open.png" class="custom-img-btn" onclick="goToSlide(3)" style="width: 220px; margin-top: 30px;">
         </div>
     </div>
 
     <div class="slide" id="s3">
-        <video loop playsinline id="bg-video-s3" class="bg-video">
-            <source src="ny_bg3.mp4" type="video/mp4">
-        </video>
+        <video loop playsinline id="bg-video-s3" class="bg-video"><source src="ny_bg3.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <div class="card-container" onclick="flipCard()">
                 <div class="card-inner" id="inner">
                     <div class="card-face card-front"></div>
                     <div class="card-face card-inside">
-                        <p style="color:#111; font-weight:normal; font-size: 1.6rem;">
-                            Happy New Year, Haze. <br><br>
-                            May 2026 bring your family healing and peace. <br><br>
-                            You are my everything.
-                        </p>
+                        <p id="type-card" style="color:#111; font-size: 1.6rem;">Happy New Year, Haze. May 2026 bring your family healing and peace. You are my everything.</p>
                     </div>
                     <div class="card-face card-back"></div>
                 </div>
             </div>
             <img src="btn_flip.png" id="flip-btn" class="custom-img-btn" onclick="flipCard()" style="width: 160px; margin-top: 30px;">
-            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; opacity: 0;">
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
         </div>
     </div>
 
     <div class="slide" id="s4">
-        <video loop playsinline id="bg-video-s4" class="bg-video">
-            <source src="ny_bg4.mp4" type="video/mp4">
-        </video>
+        <video loop playsinline id="bg-video-s4" class="bg-video"><source src="ny_bg4.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <h1 class="ny-text" id="count-text">0 Days</h1>
             <img src="final_visual.png" class="final-img">
-            <p class="sub-text">✨ 2026 is our sanctuary. ✨</p>
+            <p class="sub-text" id="type-s4">✨ 2026 is our sanctuary. ✨</p>
         </div>
     </div>
 
@@ -157,85 +151,71 @@
         let cardStep = 0;
         const piano = document.getElementById('bgPiano');
         piano.volume = 0.4;
+        const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 3: document.getElementById('bg-video-s3'), 4: document.getElementById('bg-video-s4') };
 
-        const iceVideo = document.getElementById('ice-video');
-        const bgVideos = {
-            1: document.getElementById('bg-video-s1'),
-            2: document.getElementById('bg-video-s2'),
-            3: document.getElementById('bg-video-s3'),
-            4: document.getElementById('bg-video-s4')
-        };
+        function typeText(elementId) {
+            const el = document.getElementById(elementId);
+            const text = el.innerText;
+            el.innerHTML = '';
+            const words = text.split(' ');
+            words.forEach((word, i) => {
+                const span = document.createElement('span');
+                span.innerText = word;
+                span.className = 'word';
+                el.appendChild(span);
+                setTimeout(() => span.classList.add('visible'), i * 250);
+            });
+        }
 
         function playIceVideo() {
+            const iceVideo = document.getElementById('ice-video');
             document.getElementById('hint-img').style.display = 'none';
             iceVideo.style.display = 'block';
             iceVideo.muted = false;
             iceVideo.play();
-
             iceVideo.onended = function() {
-                bgVideos[1].muted = false;
-                bgVideos[1].play();
-
-                document.getElementById('video-container').style.transition = "opacity 1.2s";
+                bgVideos[1].muted = false; bgVideos[1].play();
+                document.getElementById('video-container').style.transition = "opacity 1.5s";
                 document.getElementById('video-container').style.opacity = "0";
-                
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
-                    const content = document.getElementById('s1-content');
-                    content.style.display = 'flex';
-                    setTimeout(() => { content.style.opacity = "1"; }, 50);
-                }, 1200);
+                    document.getElementById('s1-content').style.display = 'flex';
+                    typeText('type-s1');
+                }, 1500);
             };
         }
 
         function goToSlide(n) {
-            Object.values(bgVideos).forEach(v => {
-                if(v) { v.pause(); v.muted = true; }
-            });
-
-            if (n === 2 || n === 3) {
-                if (piano.paused) piano.play();
-            } else {
-                piano.pause();
-                piano.currentTime = 0;
-            }
+            Object.values(bgVideos).forEach(v => { if(v) { v.pause(); v.muted = true; } });
+            if (n === 2 || n === 3) { if (piano.paused) piano.play(); } 
+            else { piano.pause(); piano.currentTime = 0; }
 
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-            document.getElementById('s' + n).classList.add('active');
+            const nextSlide = document.getElementById('s' + n);
+            nextSlide.classList.add('active');
 
-            if(bgVideos[n]) {
-                bgVideos[n].muted = false;
-                bgVideos[n].play();
+            if(bgVideos[n]) { bgVideos[n].muted = false; bgVideos[n].play(); }
+
+            // Trigger typing for the specific slide
+            if(n === 2) setTimeout(() => typeText('type-s2'), 1000);
+            if(n === 4) {
+                startCounter();
+                setTimeout(() => typeText('type-s4'), 1000);
             }
-
-            if(n === 4) startCounter();
-        }
-
-        function releaseLantern(e) {
-            const l = document.createElement('img');
-            l.src = 'lantern.png'; 
-            l.className = 'lantern-img';
-            l.style.left = (e.clientX - 30) + 'px';
-            l.style.top = e.clientY + 'px';
-            document.body.appendChild(l);
-            l.animate([{ transform: 'translateY(0) scale(1)', opacity: 1 }, { transform: `translateY(-110vh) scale(0.5)`, opacity: 0 }], { duration: 6000 });
-            setTimeout(() => l.remove(), 7000);
         }
 
         function flipCard() {
             cardStep++;
             const el = document.getElementById('inner');
-            const flipBtn = document.getElementById('flip-btn');
             const finalBtn = document.getElementById('final-trigger');
-            if(cardStep == 1) { el.className = 'card-inner flipped-1'; } 
+            if(cardStep == 1) { 
+                el.className = 'card-inner flipped-1'; 
+                setTimeout(() => typeText('type-card'), 800);
+            } 
             else if(cardStep == 2) {
                 el.className = 'card-inner flipped-2';
-                flipBtn.style.display = 'none';
+                document.getElementById('flip-btn').style.display = 'none';
                 finalBtn.style.display = 'block';
-                setTimeout(() => { finalBtn.style.opacity = '1'; }, 100);
-            } else { 
-                el.className = 'card-inner'; cardStep = 0; 
-                finalBtn.style.display = 'none'; flipBtn.style.display = 'block';
             }
         }
 
@@ -245,11 +225,17 @@
             const interval = setInterval(() => {
                 count += 1;
                 display.innerText = count + " Days";
-                if(count >= 365) { 
-                    clearInterval(interval); 
-                    display.innerText = "365 Days. One Love."; 
-                }
+                if(count >= 365) { clearInterval(interval); display.innerText = "365 Days. One Love."; }
             }, 40); 
+        }
+
+        function releaseLantern(e) {
+            const l = document.createElement('img');
+            l.src = 'lantern.png'; l.className = 'lantern-img';
+            l.style.left = (e.clientX - 30) + 'px'; l.style.top = e.clientY + 'px';
+            document.body.appendChild(l);
+            l.animate([{ transform: 'translateY(0) scale(1)', opacity: 1 }, { transform: `translateY(-110vh) scale(0.5)`, opacity: 0 }], { duration: 6000 });
+            setTimeout(() => l.remove(), 7000);
         }
     </script>
 </body>
