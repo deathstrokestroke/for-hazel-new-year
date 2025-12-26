@@ -101,4 +101,121 @@
                     <div class="card-face card-back"></div>
                 </div>
             </div>
-            <img src
+            <img src="btn_flip.png" id="flip-btn" class="custom-img-btn" onclick="flipCard()" style="width: 160px; margin-top: 30px;">
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; opacity: 0;">
+        </div>
+    </div>
+
+    <div class="slide" id="s4">
+        <video loop playsinline id="bg-video-s4" class="bg-video">
+            <source src="ny_bg4.mp4" type="video/mp4">
+        </video>
+        <div class="content-layer">
+            <h1 class="ny-text" id="count-text">0 Days</h1>
+            <img src="final_visual.png" class="final-img">
+            <p class="sub-text">✨ 2026 is our sanctuary. ✨</p>
+        </div>
+    </div>
+
+    <script>
+        let cardStep = 0;
+        const piano = document.getElementById('bgPiano');
+        piano.volume = 0.4;
+
+        const iceVideo = document.getElementById('ice-video');
+        const bgVideos = {
+            1: document.getElementById('bg-video-s1'),
+            2: document.getElementById('bg-video-s2'),
+            3: document.getElementById('bg-video-s3'),
+            4: document.getElementById('bg-video-s4')
+        };
+
+        function playIceVideo() {
+            document.getElementById('hint-img').style.display = 'none';
+            iceVideo.style.display = 'block';
+            iceVideo.muted = false;
+            iceVideo.play();
+
+            iceVideo.onended = function() {
+                bgVideos[1].muted = false;
+                bgVideos[1].play();
+
+                document.getElementById('video-container').style.transition = "opacity 1.2s";
+                document.getElementById('video-container').style.opacity = "0";
+                
+                setTimeout(() => {
+                    document.getElementById('video-container').style.display = "none";
+                    const content = document.getElementById('s1-content');
+                    content.style.display = 'flex';
+                    setTimeout(() => { content.style.opacity = "1"; }, 50);
+                }, 1200);
+            };
+        }
+
+        function goToSlide(n) {
+            Object.values(bgVideos).forEach(v => {
+                if(v) { v.pause(); v.muted = true; }
+            });
+
+            if (n === 2 || n === 3) {
+                if (piano.paused) piano.play();
+            } else {
+                piano.pause();
+                piano.currentTime = 0;
+            }
+
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById('s' + n).classList.add('active');
+
+            if(bgVideos[n]) {
+                bgVideos[n].muted = false;
+                bgVideos[n].play();
+            }
+
+            if(n === 4) startCounter();
+        }
+
+        function releaseLantern(e) {
+            const l = document.createElement('img');
+            l.src = 'lantern.png'; 
+            l.className = 'lantern-img';
+            l.style.left = (e.clientX - 30) + 'px';
+            l.style.top = e.clientY + 'px';
+            document.body.appendChild(l);
+            l.animate([{ transform: 'translateY(0) scale(1)', opacity: 1 }, { transform: `translateY(-110vh) scale(0.5)`, opacity: 0 }], { duration: 6000 });
+            setTimeout(() => l.remove(), 7000);
+        }
+
+        function flipCard() {
+            cardStep++;
+            const el = document.getElementById('inner');
+            const flipBtn = document.getElementById('flip-btn');
+            const finalBtn = document.getElementById('final-trigger');
+            if(cardStep == 1) { el.className = 'card-inner flipped-1'; } 
+            else if(cardStep == 2) {
+                el.className = 'card-inner flipped-2';
+                flipBtn.style.display = 'none';
+                finalBtn.style.display = 'block';
+                setTimeout(() => { finalBtn.style.opacity = '1'; }, 100);
+            } else { 
+                el.className = 'card-inner'; cardStep = 0; 
+                finalBtn.style.display = 'none'; flipBtn.style.display = 'block';
+            }
+        }
+
+        function startCounter() {
+            let count = 0;
+            const display = document.getElementById('count-text');
+            // Counter speed: increments by 1 every 15 milliseconds
+            const interval = setInterval(() => {
+                count += 1;
+                display.innerText = count + " Days";
+                if(count >= 365) { 
+                    clearInterval(interval); 
+                    display.innerText = "365 Days. One Love."; 
+                }
+            }, 15); 
+        }
+    </script>
+</body>
+</html>
