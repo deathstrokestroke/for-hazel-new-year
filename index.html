@@ -206,7 +206,7 @@
         function startCounter() {
             let count = 0;
             const display = document.getElementById('count-text');
-            // Counter speed: increments by 1 every 15 milliseconds
+            // Slowed down to 40ms interval for a beautiful buildup
             const interval = setInterval(() => {
                 count += 1;
                 display.innerText = count + " Days";
@@ -214,7 +214,7 @@
                     clearInterval(interval); 
                     display.innerText = "365 Days. One Love."; 
                 }
-            }, 15); 
+            }, 40); 
         }
     </script>
 </body>
