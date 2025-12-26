@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For Haze | 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
             background-color: #000; 
             color: #d4af37; 
-            font-family: 'Georgia', serif; 
+            font-family: 'Cinzel', serif; 
             overflow: hidden; 
             width: 100vw; height: 100vh;
         }
@@ -38,19 +39,15 @@
             transform: scale(1.1); 
         }
 
-        /* YOUR CUSTOM IMAGE BUTTON STYLE */
+        /* CUSTOM IMAGE BUTTON STYLE */
         .custom-img-btn {
-            position: relative;
-            z-index: 210;
-            width: 260px; /* Adjust width as needed */
             cursor: pointer;
             transition: transform 0.2s ease;
             filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+            z-index: 210;
         }
 
-        .custom-img-btn:active {
-            transform: scale(0.95);
-        }
+        .custom-img-btn:active { transform: scale(0.95); }
 
         /* Message Styling */
         .ny-text { font-weight: bold; font-style: italic; color: #fff; text-shadow: 0 0 10px #d4af37; line-height: 1.3; margin-top: 10vh; z-index: 10; }
@@ -82,20 +79,20 @@
             <video id="ice-video" playsinline muted>
                 <source src="ice_break.mp4" type="video/mp4">
             </video>
-            <img src="btn_ice.png" class="custom-img-btn" id="hint-img" onclick="playIceVideo()">
+            <img src="btn_ice.png" class="custom-img-btn" id="hint-img" onclick="playIceVideo()" style="width: 160px;">
         </div>
 
-        <h1 class="ny-text">hi haze ❤</h1>
-        <p class="sub-text">2025 is behind us. A fresh, clean world is waiting. Are you ready to see what's next?</p>
-        
-        <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="margin-top: 30px;">
+        <div id="s1-content" style="display:none; opacity:0; transition: 1.5s; flex-direction: column; align-items: center;">
+            <h1 class="ny-text">hi haze ❤</h1>
+            <p class="sub-text">2025 is behind us. A fresh, clean world is waiting. Are you ready to see what's next?</p>
+            <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 280px; margin-top: 20px;">
+        </div>
     </div>
 
     <div class="slide" id="s2" style="background-image: url('ny_bg2.jpg');" onclick="releaseLantern(event)">
         <h1 class="ny-text">A Year of Light</h1>
-        <p class="sub-text">Tap the sky to release a lantern. Every one is a promise I'm making to you: to be your peace, your strength, and your constant. We shine together.</p>
-        
-        <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(3)" style="margin-top: 30px; filter: hue-rotate(180deg);">
+        <p class="sub-text">Tap the sky to release a lantern. Every one is a promise I'm making to you: to be your peace, your strength, and your constant.</p>
+        <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(3)" style="width: 250px; margin-top: 30px; filter: hue-rotate(180deg);">
     </div>
 
     <div class="slide" id="s3" style="background-image: url('ny_bg3.jpg');">
@@ -103,19 +100,18 @@
             <div class="card-inner" id="inner">
                 <div class="card-face card-front"></div>
                 <div class="card-face card-inside">
-                    <p style="color:#222; font-weight:bold;">Happy New Year. May 2026 bring your family a gentle kind of healing. You are all in my thoughts.</p>
+                    <p style="color:#222; font-weight:bold;">Happy New Year. May 2026 bring your family healing and peace. You are my everything.</p>
                 </div>
                 <div class="card-face card-back"></div>
             </div>
         </div>
-        
-        <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(4)" style="margin-top: 30px; filter: grayscale(1);">
+        <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(4)" style="width: 220px; margin-top: 30px; filter: grayscale(1);">
     </div>
 
     <div class="slide" id="s4" style="background-image: url('ny_bg4.jpg');">
         <h1 class="ny-text" id="count-text">365 Days</h1>
         <img src="final_visual.png" class="final-img">
-        <p class="sub-text">From the first sunrise to the last breath of the year, I am yours. Let's make every day count. <br><br> ✨ 2026 is our sanctuary. ✨</p>
+        <p class="sub-text">From the first sunrise to the last breath of the year, I am yours. ✨ 2026 is our sanctuary. ✨</p>
     </div>
 
     <script>
@@ -124,7 +120,6 @@
         const video = document.getElementById('ice-video');
 
         function playIceVideo() {
-            // Hides your custom image button
             document.getElementById('hint-img').style.display = 'none';
             video.style.display = 'block';
             video.play();
@@ -135,6 +130,10 @@
                 document.getElementById('video-container').style.opacity = "0";
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
+                    // REVEAL CONTENT
+                    const content = document.getElementById('s1-content');
+                    content.style.display = 'flex';
+                    setTimeout(() => { content.style.opacity = "1"; }, 50);
                 }, 1200);
             };
         }
@@ -154,8 +153,8 @@
             document.body.appendChild(l);
             l.animate([
                 { transform: 'translateY(0) scale(1)', opacity: 1 },
-                { transform: `translateY(-110vh) scale(0.5) rotate(${Math.random()*40 - 20}deg)`, opacity: 0 }
-            ], { duration: 6000, easing: 'ease-in' });
+                { transform: `translateY(-110vh) scale(0.5)`, opacity: 0 }
+            ], { duration: 6000 });
             setTimeout(() => l.remove(), 7000);
         }
 
