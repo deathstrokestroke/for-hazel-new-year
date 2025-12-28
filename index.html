@@ -17,7 +17,6 @@
             height: 100vh; 
         }
         
-        /* Smooth Slide Blending */
         .slide {
             height: 100vh; width: 100vw; 
             display: flex; flex-direction: column; 
@@ -45,7 +44,6 @@
         }
         #ice-video { width: 100%; height: 100%; object-fit: cover; display: none; }
 
-        /* Button Fade-In Effect */
         .custom-img-btn {
             cursor: pointer; 
             filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
@@ -53,7 +51,7 @@
             opacity: 0;
             transform: scale(0.8);
             animation: emerge 1.5s forwards ease-out;
-            animation-delay: 6s; /* Longer delay for longer reading time */
+            animation-delay: 6s; 
         }
         @keyframes emerge {
             to { opacity: 1; transform: scale(1); }
@@ -88,20 +86,23 @@
             transition: opacity 1s ease;
         }
         
-        /* Typing Animation Styles */
         .word { opacity: 0; display: inline-block; transition: opacity 0.5s ease; margin-right: 4px; }
         .word.visible { opacity: 1; }
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        .card-container { width: 300px; height: 420px; perspective: 1000px; margin-top: 20px; z-index: 20; opacity:0; animation: emerge 1.5s forwards 0.5s;}
-        .card-inner { width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; position: relative; }
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border: 3px solid #d4af37; border-radius: 15px; display: flex; align-items: center; justify-content: center; background-color: #fff; }
-        .card-front { background-image: url('card_front.png'); background-size: cover; }
-        .card-inside { background-image: url('card_inside.png'); background-size: cover; transform: rotateY(180deg); padding: 25px; flex-direction: column; }
-        .card-back { background-image: url('card_back.png'); background-size: cover; transform: rotateY(360deg); }
-        .flipped-1 { transform: rotateY(-180deg); }
-        .flipped-2 { transform: rotateY(-360deg); }
+        /* New Envelope Video Styling for Slide 3 */
+        .envelope-wrapper {
+            width: 320px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 20;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+        }
+        #envelope-video-s3 { width: 100%; display: block; cursor: pointer; }
         
         .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
         
@@ -138,16 +139,14 @@
     <div class="slide" id="s3">
         <video loop playsinline id="bg-video-s3" class="bg-video"><source src="ny_bg3.mp4" type="video/mp4"></video>
         <div class="content-layer">
-            <div class="card-container" onclick="flipCard()">
-                <div class="card-inner" id="inner">
-                    <div class="card-face card-front"></div>
-                    <div class="card-face card-inside">
-                        <p id="type-card" style="color:#111; font-size: 1.2rem; font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;">Happy New Year, Haze. May 2026 bring your family healing and peace. You are my everything.</p>
-                    </div>
-                    <div class="card-face card-back"></div>
-                </div>
+            <div class="envelope-wrapper" onclick="playEnvelope()">
+                <video id="envelope-video-s3" playsinline>
+                    <source src="envelope.mp4" type="video/mp4">
+                </video>
             </div>
-            <img src="btn_flip.png" id="flip-btn" class="custom-img-btn" onclick="flipCard()" style="width: 160px; margin-top: 30px; animation-delay: 1s;">
+            
+            <div id="instruct-s3" class="instruction" style="opacity:1; margin-top: 15px;">Tap the envelope to open it...</div>
+
             <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; animation-delay: 0s;">
         </div>
     </div>
@@ -162,7 +161,6 @@
     </div>
 
     <script>
-        let cardStep = 0;
         const piano = document.getElementById('bgPiano');
         piano.volume = 0.4;
         const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 3: document.getElementById('bg-video-s3'), 4: document.getElementById('bg-video-s4') };
@@ -229,19 +227,15 @@
             }
         }
 
-        function flipCard() {
-            cardStep++;
-            const el = document.getElementById('inner');
-            const finalBtn = document.getElementById('final-trigger');
-            if(cardStep == 1) { 
-                el.className = 'card-inner flipped-1'; 
-                setTimeout(() => typeText('type-card', 0, 180), 800);
-            } 
-            else if(cardStep == 2) {
-                el.className = 'card-inner flipped-2';
-                document.getElementById('flip-btn').style.display = 'none';
-                finalBtn.style.display = 'block';
-            }
+        // SLIDE 3 ENVELOPE LOGIC
+        function playEnvelope() {
+            const envVid = document.getElementById('envelope-video-s3');
+            const instruct = document.getElementById('instruct-s3');
+            instruct.style.display = 'none';
+            envVid.play();
+            envVid.onended = function() {
+                document.getElementById('final-trigger').style.display = 'block';
+            };
         }
 
         function startCounter() {
