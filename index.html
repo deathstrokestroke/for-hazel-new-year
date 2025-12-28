@@ -91,7 +91,6 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* Slide 3 Video Styling */
         .envelope-container { 
             width: 320px; 
             margin-top: 20px; 
@@ -103,9 +102,9 @@
         #envelope-video { 
             width: 100%; 
             display: block; 
+            /* AGGRESSIVE COLOR REMOVAL */
             mix-blend-mode: screen; 
-            /* FILTER TO FORCE BACKGROUND TO BLACK */
-            filter: contrast(1.2) brightness(1.1);
+            filter: brightness(1.2) contrast(1.5) grayscale(0.2);
             cursor: pointer;
         }
         
