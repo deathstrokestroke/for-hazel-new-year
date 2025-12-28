@@ -91,8 +91,9 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
+        /* CHROMA KEY ENVELOPE STYLING */
         .envelope-container { 
-            width: 320px; 
+            width: 340px; 
             margin-top: 20px; 
             z-index: 20; 
             opacity: 0; 
@@ -102,10 +103,9 @@
         #envelope-video { 
             width: 100%; 
             display: block; 
-            /* AGGRESSIVE COLOR REMOVAL */
-            mix-blend-mode: screen; 
-            filter: brightness(1.2) contrast(1.5) grayscale(0.2);
             cursor: pointer;
+            /* Applies the green screen removal filter below */
+            filter: url(#chromaKey);
         }
         
         .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
@@ -114,6 +114,16 @@
     </style>
 </head>
 <body>
+
+    <svg width="0" height="0" style="position:absolute;">
+        <filter id="chromaKey">
+            <feColorMatrix type="matrix" 
+                values="1 0 0 0 0
+                        0 1 0 0 0
+                        0 0 1 0 0
+                        -1.5 3 -1.5 1 -0.1" />
+        </filter>
+    </svg>
 
     <audio id="bgPiano" loop><source src="bg_piano.mp3" type="audio/mpeg"></audio>
 
@@ -190,10 +200,9 @@
             const iceVideo = document.getElementById('ice-video');
             document.getElementById('hint-img').style.display = 'none';
             iceVideo.style.display = 'block';
-            iceVideo.muted = false;
             iceVideo.play();
             iceVideo.onended = function() {
-                bgVideos[1].muted = false; bgVideos[1].play();
+                bgVideos[1].play();
                 document.getElementById('video-container').style.transition = "opacity 1.5s";
                 document.getElementById('video-container').style.opacity = "0";
                 setTimeout(() => {
@@ -206,7 +215,7 @@
         }
 
         function goToSlide(n) {
-            Object.values(bgVideos).forEach(v => { if(v) { v.pause(); v.muted = true; } });
+            Object.values(bgVideos).forEach(v => { if(v) v.pause(); });
             if (n === 2 || n === 3) { if (piano.paused) piano.play(); } 
             else { piano.pause(); piano.currentTime = 0; }
 
@@ -214,7 +223,7 @@
             const nextSlide = document.getElementById('s' + n);
             nextSlide.classList.add('active');
 
-            if(bgVideos[n]) { bgVideos[n].muted = false; bgVideos[n].play(); }
+            if(bgVideos[n]) bgVideos[n].play();
 
             if(n === 2) {
                 setTimeout(() => {
