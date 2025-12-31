@@ -47,7 +47,7 @@
         .custom-img-btn {
             cursor: pointer; 
             filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
-            z-index: 310; mix-blend-mode: screen; 
+            z-index: 310;
             opacity: 0;
             transform: scale(0.8);
             animation: emerge 1.5s forwards ease-out;
@@ -71,7 +71,6 @@
             font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
             margin-top: 15px; line-height: 1.45; padding: 18px; 
             border-radius: 12px; background: rgba(0,0,0,0.6);
-            min-height: 50px;
         }
 
         .instruction {
@@ -84,20 +83,20 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* GIF ENVELOPE STYLING */
+        /* ENVELOPE GIF STYLING */
         .envelope-wrapper {
-            width: 300px;
+            width: 320px;
             margin-top: 20px;
             z-index: 20;
             opacity: 0;
             animation: emerge 1.5s forwards 0.5s;
         }
 
-        #envelope-gif { 
+        #envelope-display { 
             width: 100%; 
             cursor: pointer;
-            /* Screen mode still helps if the GIF has a black background */
-            mix-blend-mode: screen; 
+            /* Added a subtle glow since it's now transparent */
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
         }
         
         .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
@@ -135,10 +134,10 @@
         <video loop playsinline id="bg-video-s3" class="bg-video"><source src="ny_bg3.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <div class="envelope-wrapper">
-                <img src="envelope_static.png" id="envelope-gif" onclick="playEnvelopeGif()">
+                <img src="envelope_static.png" id="envelope-display" onclick="handleEnvelope()">
             </div>
             <div id="instruct-s3" class="instruction">Tap the envelope to open...</div>
-            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; animation-delay: 0s;">
         </div>
     </div>
 
@@ -199,15 +198,16 @@
             if(n === 4) { startCounter(); typeText('type-s4', 2000, 80); }
         }
 
-        function playEnvelopeGif() {
-            const img = document.getElementById('envelope-gif');
-            // Change the source to the GIF to start the animation
-            img.src = 'envelope.gif';
+        function handleEnvelope() {
+            const display = document.getElementById('envelope-display');
+            // Change source to the animated transparent GIF
+            display.src = 'envelope.gif';
             
-            // Wait for the duration of your GIF (e.g., 3000ms = 3 seconds)
+            // Adjust the timeout (3500ms) to the length of your GIF animation
             setTimeout(() => {
                 document.getElementById('final-trigger').style.display = 'block';
-            }, 3000); // Change 3000 to the actual length of your GIF
+                document.getElementById('instruct-s3').style.opacity = '0';
+            }, 3500);
         }
 
         function startCounter() {
