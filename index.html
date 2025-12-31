@@ -61,7 +61,7 @@
         .ny-text { 
             font-family: 'Alex Brush', cursive;
             font-size: 4.2rem; color: #fff; text-shadow: 0 0 15px #d4af37; 
-            margin-top: 6vh; line-height: 1.1;
+            margin-top: 6vh; line-height: 1.1; min-height: 1.2em;
         }
         
         .sub-text { 
@@ -70,6 +70,7 @@
             font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
             margin-top: 15px; line-height: 1.45; padding: 18px; 
             border-radius: 12px; background: rgba(0,0,0,0.6);
+            min-height: 140px;
         }
 
         .word { opacity: 0; display: inline-block; transition: opacity 0.4s ease; margin-right: 4px; }
@@ -91,7 +92,7 @@
             object-fit: contain;
             display: none;
             z-index: 20;
-            transform: scale(0.2); /* Start small */
+            transform: scale(0.2); 
             opacity: 0;
             transition: transform 1.5s ease-out, opacity 1s ease-out;
         }
@@ -99,7 +100,7 @@
         #frozen-card.zoom-out {
             display: block;
             opacity: 1;
-            transform: scale(1); /* Fill screen */
+            transform: scale(1); 
         }
 
         .overlay-content {
@@ -125,7 +126,7 @@
         <div id="s1-content" class="content-layer" style="display:none;">
             <h1 class="ny-text">Hi Haze ❤</h1>
             <p class="sub-text" id="type-s1"></p>
-            <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 240px; margin-top: 20px; animation-delay: 5s;">
+            <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 240px; margin-top: 20px;">
         </div>
     </div>
 
@@ -134,7 +135,7 @@
         <div class="content-layer">
             <h1 class="ny-text">A Year of Light</h1>
             <p class="sub-text" id="type-s2"></p> 
-            <img src="btn_open.png" class="custom-img-btn" onclick="goToSlide(3)" style="width: 220px; margin-top: 30px; animation-delay: 8s;">
+            <img src="btn_open.png" class="custom-img-btn" onclick="goToSlide(3)" style="width: 220px; margin-top: 30px;">
         </div>
     </div>
 
@@ -166,9 +167,9 @@
         const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 4: document.getElementById('bg-video-s4') };
 
         const texts = {
-            s1: "2025 brought many days and many changes, but you know what the best part was — sharing another year with you...",
-            s2: "Like those wish lanterns floating into the sky, I want to make some promises to you this year...",
-            s4: "As we step into 2026, I just want you to know… being with you makes my world brighter every day..."
+            s1: "As December Count It's Final Day I Am Thinking Of You Now More Than Ever. You Came To My Life As A Quiet Blessing, And Even When The World Felt Heavy Loving You Felt Light. The Truth Is, Every Year Ends, But Not Every Year Gives You Someone Worth Holding Onto. And This Year Gave Me You Who Became A Reason To Smile, A Reason To Hope, And A Reason To Believe That Love Still Exist From Far And In Simplest Moments. So When The New Year Begins I Won't Make Big Resolutions. I'll Just Carry One Thing With Me Your Name In My Heart And The Wish That Destiny Keeps Our Path Connected. 2025 brought many days and many changes, but you know what the best part was — sharing another year with you. Even from afar, you made it special just by being you. This year wasn’t easy for us. You lost your mom at the beginning of the year, and I lost my job in the middle of it, yet we still stood strong together. You inspire me more than you know, and I’ve learned so much from you this year. I made this message so we can enter 2026 together, and I hope the next year keeps us close and full of love.",
+            s2: "Like those wish lanterns floating into the sky, I want to make some promises to you this year. I know I still have flaws, but I’m trying every day to be a better person. Not because you asked me to change, but because your love and your cuteness are changing me. I’m choosing to grow, to improve, and to become someone who truly deserves you. I wish you growth, happiness, health, and all the success and prosperity your heart desires. May all your dreams shine as brightly as your smile, and may every step you take this year bring you closer to the life you’ve always imagined. And for us, I wish we could be together this year, so this long distance feels smaller and our love feels closer than ever.",
+            s4: "As we step into 2026, I just want you to know… being with you, even from afar, makes my world brighter every single day. I can’t promise every day will be perfect, but I promise to keep loving you, laughing with you, and cherishing every little moment we share. I can’t wait for the adventures we’ll have, the silly moments that make us laugh until our stomachs hurt, and the quiet times where it’s just you and me. You are my heart, my favorite thought, and the best part of every day. Here’s to a year where our love grows stronger, our dreams get closer, and maybe… just maybe… the distance between us fades a little more. I love you, Haze, more than words can ever say — and I’m so lucky it’s with you I get to enter this New Year."
         };
 
         function typeText(elementId, textKey, delay = 0) {
@@ -202,7 +203,12 @@
         function goToSlide(n) {
             Object.values(bgVideos).forEach(v => { if(v) v.pause(); });
             if (n <= 3) { if (piano.paused) piano.play(); } 
-            else { piano.pause(); } // Stop music on Slide 4
+            else { 
+                let fadeOut = setInterval(() => {
+                    if (piano.volume > 0.05) { piano.volume -= 0.05; } 
+                    else { piano.pause(); clearInterval(fadeOut); }
+                }, 100);
+            }
 
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
@@ -221,19 +227,17 @@
             v.play();
             inst.style.display = 'none';
 
-            // 1. Monitor video for the "Open" moment (adjust 5 to your exact time)
             const checkOpen = setInterval(() => {
                 if (v.currentTime >= 5) {
                     clearInterval(checkOpen);
-                    v.style.display = 'none'; // Stop video
-                    img.classList.add('zoom-out'); // Show PNG and Zoom Out
+                    v.style.display = 'none'; 
+                    img.classList.add('zoom-out'); 
                     
-                    // 2. Wait 30 seconds for her to read
                     setTimeout(() => {
-                        img.style.opacity = '0'; // Go to black
+                        img.style.opacity = '0'; 
                         setTimeout(() => {
                             img.style.display = 'none';
-                            btn.style.display = 'block'; // Show Sanctuary Button
+                            btn.style.display = 'block'; 
                         }, 1500);
                     }, 30000);
                 }
