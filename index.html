@@ -85,8 +85,6 @@
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
         /* SLIDE 3: ENVELOPE VIDEO SETTINGS */
-        #s3 { background-color: #000; } /* Pure black background for the end transition */
-
         .fullscreen-wrap {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 5; background: #000;
@@ -96,12 +94,12 @@
             width: 100%; height: 100%; 
             object-fit: contain; 
             cursor: pointer;
-            transition: opacity 1.5s ease; /* Fade effect when it stops */
         }
 
         .overlay-content {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding-bottom: 5vh;
             z-index: 15; pointer-events: none;
         }
         .overlay-content img { pointer-events: auto; }
@@ -139,7 +137,7 @@
 
     <div class="slide" id="s3">
         <div class="fullscreen-wrap">
-            <video id="envelope-video-final" playsinline loop onclick="startEnvelopeVideo()">
+            <video id="envelope-video-final" playsinline onclick="startEnvelopeVideo()">
                 <source src="envelope_with_bg.mp4" type="video/mp4">
             </video>
         </div>
@@ -217,25 +215,17 @@
             if(n === 4) { startCounter(); typeText('type-s4', 's4', 1500); }
         }
 
-        // Modified function to track 30 seconds
         function startEnvelopeVideo() {
             const v = document.getElementById('envelope-video-final');
+            
+            // SLOW MOTION SETTING: 1.0 is normal, 0.5 is half speed.
+            v.playbackRate = 0.5; 
+            
             v.play();
             document.getElementById('instruct-s3').style.opacity = '0';
-
-            // Check the time every half second
-            const checkTime = setInterval(() => {
-                if (v.currentTime >= 30) {
-                    clearInterval(checkTime);
-                    v.pause();
-                    v.style.opacity = '0'; // Fades video to black
-                    
-                    // Show the button after the fade
-                    setTimeout(() => {
-                        document.getElementById('final-trigger').style.display = 'block';
-                    }, 1000);
-                }
-            }, 500);
+            v.onended = () => {
+                document.getElementById('final-trigger').style.display = 'block';
+            };
         }
 
         function startCounter() {
