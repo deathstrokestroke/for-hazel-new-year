@@ -71,7 +71,7 @@
             font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
             margin-top: 15px; line-height: 1.45; padding: 18px; 
             border-radius: 12px; background: rgba(0,0,0,0.6);
-            min-height: 120px; /* Vital for scannability and prevents jumping */
+            min-height: 120px;
         }
 
         .instruction {
@@ -96,11 +96,14 @@
             animation: emerge 1.5s forwards 0.5s;
         }
 
+        /* THE FIX FOR STUBBORN GIF BACKGROUNDS */
         #envelope-display { 
             max-width: 100%; 
             max-height: 100%;
             cursor: pointer;
-            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+            /* Blend mode makes black disappear, Contrast makes dark colors go to absolute black */
+            mix-blend-mode: screen; 
+            filter: contrast(1.2) brightness(1.1);
         }
         
         .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
@@ -138,7 +141,7 @@
         <video loop playsinline id="bg-video-s3" class="bg-video"><source src="ny_bg3.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <div class="envelope-wrapper">
-                <img src="./envelope.gif" id="envelope-display" onclick="handleEnvelope()">
+                <img src="envelope.gif" id="envelope-display" onclick="handleEnvelope()">
             </div>
             <div id="instruct-s3" class="instruction">Tap the envelope to open...</div>
             <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
@@ -165,7 +168,7 @@
             s4: "As we step into 2026, I just want you to know… being with you, even from afar, makes my world brighter every single day. I can’t promise every day will be perfect, but I promise to keep loving you, laughing with you, and cherishing every little moment we share. I can’t wait for the adventures we’ll have, the silly moments that make us laugh until our stomachs hurt, and the quiet times where it’s just you and me. You are my heart, my favorite thought, and the best part of every day. Here’s to a year where our love grows stronger, our dreams get closer, and maybe… just maybe… the distance between us fades a little more. I love you, Haze, more than words can ever say — and I’m so lucky it’s with you I get to enter this New Year."
         };
 
-        function typeText(elementId, textKey, delay = 0, speed = 50) {
+        function typeText(elementId, textKey, delay = 0, speed = 40) {
             const el = document.getElementById(elementId);
             if (!el) return;
             el.innerHTML = '';
@@ -192,7 +195,7 @@
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
                     document.getElementById('s1-content').style.display = 'flex';
-                    typeText('type-s1', 's1', 500, 50);
+                    typeText('type-s1', 's1', 500);
                 }, 1000);
             };
         }
@@ -210,24 +213,24 @@
             }
 
             if(n === 2) { 
-                typeText('type-s2', 's2', 800, 50); 
+                typeText('type-s2', 's2', 800); 
             }
             if(n === 4) { 
                 startCounter(); 
-                typeText('type-s4', 's4', 1500, 50); 
+                typeText('type-s4', 's4', 1500); 
             }
         }
 
         function handleEnvelope() {
             const display = document.getElementById('envelope-display');
-            // Refresh the GIF to ensure it plays from the start
             const gifUrl = display.src;
             display.src = "";
             display.src = gifUrl;
             
             setTimeout(() => {
                 document.getElementById('final-trigger').style.display = 'block';
-            }, 3000); // Adjust this to your GIF length
+                document.getElementById('instruct-s3').style.opacity = '0';
+            }, 3000);
         }
 
         function startCounter() {
