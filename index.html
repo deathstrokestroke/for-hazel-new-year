@@ -84,7 +84,7 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* SLIDE 3: ENVELOPE VIDEO SETTINGS */
+        /* SLIDE 3: BLACKOUT LOGIC */
         .fullscreen-wrap {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 5; background: #000;
@@ -94,12 +94,12 @@
             width: 100%; height: 100%; 
             object-fit: contain; 
             cursor: pointer;
+            transition: opacity 1.5s ease;
         }
 
         .overlay-content {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            padding-bottom: 5vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 15; pointer-events: none;
         }
         .overlay-content img { pointer-events: auto; }
@@ -137,7 +137,7 @@
 
     <div class="slide" id="s3">
         <div class="fullscreen-wrap">
-            <video id="envelope-video-final" playsinline onclick="startEnvelopeVideo()">
+            <video id="envelope-video-final" playsinline loop onclick="startEnvelopeVideo()">
                 <source src="envelope_with_bg.mp4" type="video/mp4">
             </video>
         </div>
@@ -201,7 +201,15 @@
 
         function goToSlide(n) {
             Object.values(bgVideos).forEach(v => { if(v) v.pause(); });
-            if (n >= 2) { if (piano.paused) piano.play(); } 
+            
+            if (n >= 1 && n <= 3) { 
+                if (piano.paused) piano.play(); 
+            } else if (n === 4) {
+                let fadeOut = setInterval(() => {
+                    if (piano.volume > 0.05) { piano.volume -= 0.05; } 
+                    else { piano.pause(); clearInterval(fadeOut); }
+                }, 100);
+            }
             
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
@@ -217,15 +225,19 @@
 
         function startEnvelopeVideo() {
             const v = document.getElementById('envelope-video-final');
-            
-            // SLOW MOTION SETTING: 1.0 is normal, 0.5 is half speed.
-            v.playbackRate = 0.5; 
-            
+            v.playbackRate = 0.5; // Slow motion
             v.play();
             document.getElementById('instruct-s3').style.opacity = '0';
-            v.onended = () => {
-                document.getElementById('final-trigger').style.display = 'block';
-            };
+            
+            // Wait for exactly 30 seconds total
+            setTimeout(() => {
+                v.style.opacity = '0'; // Fade video to black
+                setTimeout(() => {
+                    v.pause();
+                    v.style.display = 'none';
+                    document.getElementById('final-trigger').style.display = 'block';
+                }, 1500); // Time for the fade-out to complete
+            }, 30000); 
         }
 
         function startCounter() {
