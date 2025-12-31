@@ -84,23 +84,24 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* SLIDE 3: FIXED VIDEO SIZE */
+        /* SLIDE 3: ENVELOPE VIDEO SETTINGS */
+        #s3 { background-color: #000; } /* Pure black background for the end transition */
+
         .fullscreen-wrap {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 5; background: #000;
             display: flex; align-items: center; justify-content: center;
         }
         #envelope-video-final {
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; /* This prevents the oversized/stuck-out look */
+            width: 100%; height: 100%; 
+            object-fit: contain; 
             cursor: pointer;
+            transition: opacity 1.5s ease; /* Fade effect when it stops */
         }
 
         .overlay-content {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            padding-bottom: 8vh; /* Keeps button near bottom but visible */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 15; pointer-events: none;
         }
         .overlay-content img { pointer-events: auto; }
@@ -138,7 +139,7 @@
 
     <div class="slide" id="s3">
         <div class="fullscreen-wrap">
-            <video id="envelope-video-final" playsinline onclick="playEnvelopeVideo()">
+            <video id="envelope-video-final" playsinline loop onclick="startEnvelopeVideo()">
                 <source src="envelope_with_bg.mp4" type="video/mp4">
             </video>
         </div>
@@ -216,13 +217,25 @@
             if(n === 4) { startCounter(); typeText('type-s4', 's4', 1500); }
         }
 
-        function playEnvelopeVideo() {
+        // Modified function to track 30 seconds
+        function startEnvelopeVideo() {
             const v = document.getElementById('envelope-video-final');
             v.play();
-            v.onended = () => {
-                document.getElementById('final-trigger').style.display = 'block';
-                document.getElementById('instruct-s3').style.opacity = '0';
-            };
+            document.getElementById('instruct-s3').style.opacity = '0';
+
+            // Check the time every half second
+            const checkTime = setInterval(() => {
+                if (v.currentTime >= 30) {
+                    clearInterval(checkTime);
+                    v.pause();
+                    v.style.opacity = '0'; // Fades video to black
+                    
+                    // Show the button after the fade
+                    setTimeout(() => {
+                        document.getElementById('final-trigger').style.display = 'block';
+                    }, 1000);
+                }
+            }, 500);
         }
 
         function startCounter() {
