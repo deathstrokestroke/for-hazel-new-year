@@ -24,7 +24,7 @@
             position: absolute; text-align: center; padding: 25px;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 2.5s ease-in-out, visibility 2.5s;
+            transition: opacity 2s ease-in-out, visibility 2s;
             z-index: 1;
         }
         .active { 
@@ -51,7 +51,7 @@
             opacity: 0;
             transform: scale(0.8);
             animation: emerge 1.5s forwards ease-out;
-            animation-delay: 6s; 
+            animation-delay: 5s; 
         }
         @keyframes emerge {
             to { opacity: 1; transform: scale(1); }
@@ -71,7 +71,7 @@
             font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
             margin-top: 15px; line-height: 1.45; padding: 18px; 
             border-radius: 12px; background: rgba(0,0,0,0.6);
-            min-height: 120px;
+            min-height: 140px;
         }
 
         .instruction {
@@ -84,29 +84,27 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
+        /* NEW ENVELOPE VIDEO STYLING */
         .envelope-wrapper {
-            width: 320px;
-            height: 320px;
+            width: 100%;
+            height: 60vh;
             margin-top: 20px;
             z-index: 20;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            animation: emerge 1.5s forwards 0.5s;
         }
 
-        /* THE FIX FOR STUBBORN GIF BACKGROUNDS */
-        #envelope-display { 
-            max-width: 100%; 
+        #envelope-video-final { 
+            max-width: 90%; 
             max-height: 100%;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
             cursor: pointer;
-            /* Blend mode makes black disappear, Contrast makes dark colors go to absolute black */
-            mix-blend-mode: multiply; 
-            filter: contrast(1.2) brightness(1.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
         
-        .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
+        .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 2s; }
         #count-text { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px #d4af37; margin-top: 5vh; }
     </style>
 </head>
@@ -141,9 +139,11 @@
         <video loop playsinline id="bg-video-s3" class="bg-video"><source src="ny_bg3.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <div class="envelope-wrapper">
-                <img src="envelope.gif" id="envelope-display" onclick="handleEnvelope()">
+                <video id="envelope-video-final" playsinline onclick="playEnvelopeVideo()">
+                    <source src="envelope_with_bg.mp4" type="video/mp4">
+                </video>
             </div>
-            <div id="instruct-s3" class="instruction">Tap the envelope to open...</div>
+            <div id="instruct-s3" class="instruction">Tap the video to open...</div>
             <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
         </div>
     </div>
@@ -212,25 +212,17 @@
                 bgVideos[n].play();
             }
 
-            if(n === 2) { 
-                typeText('type-s2', 's2', 800); 
-            }
-            if(n === 4) { 
-                startCounter(); 
-                typeText('type-s4', 's4', 1500); 
-            }
+            if(n === 2) { typeText('type-s2', 's2', 800); }
+            if(n === 4) { startCounter(); typeText('type-s4', 's4', 1500); }
         }
 
-        function handleEnvelope() {
-            const display = document.getElementById('envelope-display');
-            const gifUrl = display.src;
-            display.src = "";
-            display.src = gifUrl;
-            
-            setTimeout(() => {
+        function playEnvelopeVideo() {
+            const v = document.getElementById('envelope-video-final');
+            v.play();
+            v.onended = () => {
                 document.getElementById('final-trigger').style.display = 'block';
                 document.getElementById('instruct-s3').style.opacity = '0';
-            }, 3000);
+            };
         }
 
         function startCounter() {
@@ -254,4 +246,3 @@
     </script>
 </body>
 </html>
-
