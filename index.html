@@ -71,6 +71,7 @@
             font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
             margin-top: 15px; line-height: 1.45; padding: 18px; 
             border-radius: 12px; background: rgba(0,0,0,0.6);
+            min-height: 120px; /* Vital for scannability and prevents jumping */
         }
 
         .instruction {
@@ -78,25 +79,28 @@
             letter-spacing: 2px; margin-top: 8px; opacity: 1;
         }
         
-        .word { opacity: 0; display: inline-block; transition: opacity 0.5s ease; margin-right: 4px; }
+        .word { opacity: 0; display: inline-block; transition: opacity 0.4s ease; margin-right: 4px; }
         .word.visible { opacity: 1; }
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* ENVELOPE GIF STYLING */
         .envelope-wrapper {
             width: 320px;
+            height: 320px;
             margin-top: 20px;
             z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             opacity: 0;
             animation: emerge 1.5s forwards 0.5s;
         }
 
         #envelope-display { 
-            width: 100%; 
+            max-width: 100%; 
+            max-height: 100%;
             cursor: pointer;
-            /* Added a subtle glow since it's now transparent */
-            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
         }
         
         .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
@@ -114,8 +118,8 @@
             <img src="btn_ice.png" class="custom-img-btn" id="hint-img" onclick="playIceVideo()" style="width: 130px; opacity: 1; transform: scale(1); animation: none;">
         </div>
         <div id="s1-content" class="content-layer" style="display:none;">
-            <h1 class="ny-text" id="head-s1">Hi Haze ❤</h1>
-            <p class="sub-text" id="type-s1">2025 brought many days and many changes, but you know what the best part was — sharing another year with you. Even from afar, you made it special just by being you. This year wasn’t easy for us. You lost your mom at the beginning of the year, and I lost my job in the middle of it, yet we still stood strong together. You inspire me more than you know, and I’ve learned so much from you this year. I made this message so we can enter 2026 together, and I hope the next year keeps us close and full of love.</p>
+            <h1 class="ny-text">Hi Haze ❤</h1>
+            <p class="sub-text" id="type-s1"></p>
             <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 240px; margin-top: 20px;">
         </div>
     </div>
@@ -123,9 +127,9 @@
     <div class="slide" id="s2" onclick="releaseLantern(event)">
         <video loop playsinline id="bg-video-s2" class="bg-video"><source src="ny_bg2.mp4" type="video/mp4"></video>
         <div class="content-layer">
-            <h1 class="ny-text" id="head-s2">A Year of Light</h1>
+            <h1 class="ny-text">A Year of Light</h1>
             <div id="instruct-s2" class="instruction">Tap the sky to release a lantern...</div>
-            <p class="sub-text" id="type-s2">Like those wish lanterns floating into the sky, I want to make some promises to you this year. I know I still have flaws, but I’m trying every day to be a better person. Not because you asked me to change, but because your love and your cuteness are changing me. I’m choosing to grow, to improve, and to become someone who truly deserves you. I wish you growth, happiness, health, and all the success and prosperity your heart desires. May all your dreams shine as brightly as your smile, and may every step you take this year bring you closer to the life you’ve always imagined. And for us, I wish we could be together this year, so this long distance feels smaller and our love feels closer than ever.</p>
+            <p class="sub-text" id="type-s2"></p> 
             <img src="btn_open.png" class="custom-img-btn" onclick="goToSlide(3)" style="width: 220px; margin-top: 30px;">
         </div>
     </div>
@@ -134,10 +138,10 @@
         <video loop playsinline id="bg-video-s3" class="bg-video"><source src="ny_bg3.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <div class="envelope-wrapper">
-                <img src="envelope_static.png" id="envelope-display" onclick="handleEnvelope()">
+                <img src="./envelope.gif" id="envelope-display" onclick="handleEnvelope()">
             </div>
             <div id="instruct-s3" class="instruction">Tap the envelope to open...</div>
-            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none; animation-delay: 0s;">
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
         </div>
     </div>
 
@@ -146,7 +150,7 @@
         <div class="content-layer">
             <h1 class="ny-text" id="count-text">0 Days</h1>
             <img src="final_visual.png" class="final-img">
-            <p class="sub-text" id="type-s4">As we step into 2026, I just want you to know… being with you, even from afar, makes my world brighter every single day. I can’t promise every day will be perfect, but I promise to keep loving you, laughing with you, and cherishing every little moment we share. I can’t wait for the adventures we’ll have, the silly moments that make us laugh until our stomachs hurt, and the quiet times where it’s just you and me. You are my heart, my favorite thought, and the best part of every day. Here’s to a year where our love grows stronger, our dreams get closer, and maybe… just maybe… the distance between us fades a little more. I love you, Haze, more than words can ever say — and I’m so lucky it’s with you I get to enter this New Year.</p>
+            <p class="sub-text" id="type-s4"></p>
         </div>
     </div>
 
@@ -155,11 +159,17 @@
         piano.volume = 0.4;
         const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 3: document.getElementById('bg-video-s3'), 4: document.getElementById('bg-video-s4') };
 
-        function typeText(elementId, delay = 0, speed = 100) {
+        const texts = {
+            s1: "2025 brought many days and many changes, but you know what the best part was — sharing another year with you. Even from afar, you made it special just by being you. This year wasn’t easy for us. You lost your mom at the beginning of the year, and I lost my job in the middle of it, yet we still stood strong together. You inspire me more than you know, and I’ve learned so much from you this year. I made this message so we can enter 2026 together, and I hope the next year keeps us close and full of love.",
+            s2: "Like those wish lanterns floating into the sky, I want to make some promises to you this year. I know I still have flaws, but I’m trying every day to be a better person. Not because you asked me to change, but because your love and your cuteness are changing me. I’m choosing to grow, to improve, and to become someone who truly deserves you. I wish you growth, happiness, health, and all the success and prosperity your heart desires. May all your dreams shine as brightly as your smile, and may every step you take this year bring you closer to the life you’ve always imagined. And for us, I wish we could be together this year, so this long distance feels smaller and our love feels closer than ever.",
+            s4: "As we step into 2026, I just want you to know… being with you, even from afar, makes my world brighter every single day. I can’t promise every day will be perfect, but I promise to keep loving you, laughing with you, and cherishing every little moment we share. I can’t wait for the adventures we’ll have, the silly moments that make us laugh until our stomachs hurt, and the quiet times where it’s just you and me. You are my heart, my favorite thought, and the best part of every day. Here’s to a year where our love grows stronger, our dreams get closer, and maybe… just maybe… the distance between us fades a little more. I love you, Haze, more than words can ever say — and I’m so lucky it’s with you I get to enter this New Year."
+        };
+
+        function typeText(elementId, textKey, delay = 0, speed = 50) {
             const el = document.getElementById(elementId);
-            const text = el.innerText;
+            if (!el) return;
             el.innerHTML = '';
-            const words = text.split(' ');
+            const words = texts[textKey].split(' ');
             setTimeout(() => {
                 words.forEach((word, i) => {
                     const span = document.createElement('span');
@@ -182,32 +192,42 @@
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
                     document.getElementById('s1-content').style.display = 'flex';
-                    typeText('head-s1', 0, 250);
-                    typeText('type-s1', 1200, 100);
-                }, 1500);
+                    typeText('type-s1', 's1', 500, 50);
+                }, 1000);
             };
         }
 
         function goToSlide(n) {
             Object.values(bgVideos).forEach(v => { if(v) v.pause(); });
-            if (n === 2 || n === 3) { if (piano.paused) piano.play(); } 
+            if (n >= 2) { if (piano.paused) piano.play(); } 
+            
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
-            if(bgVideos[n]) { bgVideos[n].currentTime = 0; bgVideos[n].play(); }
-            if(n === 2) { typeText('head-s2', 500, 200); typeText('type-s2', 1500, 80); }
-            if(n === 4) { startCounter(); typeText('type-s4', 2000, 80); }
+            
+            if(bgVideos[n]) {
+                bgVideos[n].currentTime = 0;
+                bgVideos[n].play();
+            }
+
+            if(n === 2) { 
+                typeText('type-s2', 's2', 800, 50); 
+            }
+            if(n === 4) { 
+                startCounter(); 
+                typeText('type-s4', 's4', 1500, 50); 
+            }
         }
 
         function handleEnvelope() {
             const display = document.getElementById('envelope-display');
-            // Change source to the animated transparent GIF
-            display.src = 'envelope.gif';
+            // Refresh the GIF to ensure it plays from the start
+            const gifUrl = display.src;
+            display.src = "";
+            display.src = gifUrl;
             
-            // Adjust the timeout (3500ms) to the length of your GIF animation
             setTimeout(() => {
                 document.getElementById('final-trigger').style.display = 'block';
-                document.getElementById('instruct-s3').style.opacity = '0';
-            }, 3500);
+            }, 3000); // Adjust this to your GIF length
         }
 
         function startCounter() {
