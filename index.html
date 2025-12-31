@@ -84,18 +84,23 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* SLIDE 3: FULL SCREEN VIDEO SETTINGS */
+        /* SLIDE 3: FIXED VIDEO SIZE */
         .fullscreen-wrap {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 5; background: #000;
+            display: flex; align-items: center; justify-content: center;
         }
         #envelope-video-final {
-            width: 100%; height: 100%; object-fit: cover; cursor: pointer;
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; /* This prevents the oversized/stuck-out look */
+            cursor: pointer;
         }
 
         .overlay-content {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding-bottom: 8vh; /* Keeps button near bottom but visible */
             z-index: 15; pointer-events: none;
         }
         .overlay-content img { pointer-events: auto; }
@@ -138,7 +143,7 @@
             </video>
         </div>
         <div class="overlay-content">
-            <div id="instruct-s3" class="instruction" style="background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 8px; margin-bottom: 20px;">Tap the envelope to open...</div>
+            <div id="instruct-s3" class="instruction" style="background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 8px; margin-bottom: 20px; color: #fff;">Tap the envelope to open...</div>
             <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 260px; display: none; animation-delay: 0s;">
         </div>
     </div>
