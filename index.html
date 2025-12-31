@@ -51,7 +51,6 @@
             opacity: 0;
             transform: scale(0.8);
             animation: emerge 1.5s forwards ease-out;
-            animation-delay: 5s; 
         }
         @keyframes emerge {
             to { opacity: 1; transform: scale(1); }
@@ -62,7 +61,7 @@
         .ny-text { 
             font-family: 'Alex Brush', cursive;
             font-size: 4.2rem; color: #fff; text-shadow: 0 0 15px #d4af37; 
-            margin-top: 6vh; line-height: 1.1; min-height: 1.2em;
+            margin-top: 6vh; line-height: 1.1;
         }
         
         .sub-text { 
@@ -71,40 +70,45 @@
             font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
             margin-top: 15px; line-height: 1.45; padding: 18px; 
             border-radius: 12px; background: rgba(0,0,0,0.6);
-            min-height: 140px;
         }
 
-        .instruction {
-            font-size: 0.8rem; color: #d4af37; text-transform: uppercase;
-            letter-spacing: 2px; margin-top: 8px; opacity: 1;
-        }
-        
         .word { opacity: 0; display: inline-block; transition: opacity 0.4s ease; margin-right: 4px; }
         .word.visible { opacity: 1; }
 
-        .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
+        /* SLIDE 3: ZOOM & BLACKOUT */
+        #s3 { background-color: #000; }
         
-        /* SLIDE 3: BLACKOUT LOGIC */
-        .fullscreen-wrap {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 5; background: #000;
-            display: flex; align-items: center; justify-content: center;
-        }
         #envelope-video-final {
             width: 100%; height: 100%; 
             object-fit: contain; 
-            cursor: pointer;
-            transition: opacity 1.5s ease;
+            z-index: 5;
+        }
+
+        #frozen-card {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            object-fit: contain;
+            display: none;
+            z-index: 20;
+            transform: scale(0.2); /* Start small */
+            opacity: 0;
+            transition: transform 1.5s ease-out, opacity 1s ease-out;
+        }
+
+        #frozen-card.zoom-out {
+            display: block;
+            opacity: 1;
+            transform: scale(1); /* Fill screen */
         }
 
         .overlay-content {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 15; pointer-events: none;
+            z-index: 100; pointer-events: none;
         }
         .overlay-content img { pointer-events: auto; }
 
-        .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 2s; }
         #count-text { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px #d4af37; margin-top: 5vh; }
     </style>
 </head>
@@ -121,29 +125,29 @@
         <div id="s1-content" class="content-layer" style="display:none;">
             <h1 class="ny-text">Hi Haze ❤</h1>
             <p class="sub-text" id="type-s1"></p>
-            <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 240px; margin-top: 20px;">
+            <img src="btn_step_into.png" class="custom-img-btn" onclick="goToSlide(2)" style="width: 240px; margin-top: 20px; animation-delay: 5s;">
         </div>
     </div>
 
-    <div class="slide" id="s2" onclick="releaseLantern(event)">
+    <div class="slide" id="s2">
         <video loop playsinline id="bg-video-s2" class="bg-video"><source src="ny_bg2.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <h1 class="ny-text">A Year of Light</h1>
-            <div id="instruct-s2" class="instruction">Tap the sky to release a lantern...</div>
             <p class="sub-text" id="type-s2"></p> 
-            <img src="btn_open.png" class="custom-img-btn" onclick="goToSlide(3)" style="width: 220px; margin-top: 30px;">
+            <img src="btn_open.png" class="custom-img-btn" onclick="goToSlide(3)" style="width: 220px; margin-top: 30px; animation-delay: 8s;">
         </div>
     </div>
 
     <div class="slide" id="s3">
-        <div class="fullscreen-wrap">
-            <video id="envelope-video-final" playsinline loop onclick="startEnvelopeVideo()">
-                <source src="envelope_with_bg.mp4" type="video/mp4">
-            </video>
-        </div>
+        <video id="envelope-video-final" playsinline onclick="startSequence()">
+            <source src="envelope_with_bg.mp4" type="video/mp4">
+        </video>
+        
+        <img src="card_open.png" id="frozen-card">
+
         <div class="overlay-content">
-            <div id="instruct-s3" class="instruction" style="background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 8px; margin-bottom: 20px; color: #fff;">Tap the envelope to open...</div>
-            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 260px; display: none; animation-delay: 0s;">
+            <div id="instruct-s3" class="instruction" style="color:#fff; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">Tap the envelope to open...</div>
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 260px; display: none;">
         </div>
     </div>
 
@@ -151,7 +155,7 @@
         <video loop playsinline id="bg-video-s4" class="bg-video"><source src="ny_bg4.mp4" type="video/mp4"></video>
         <div class="content-layer">
             <h1 class="ny-text" id="count-text">0 Days</h1>
-            <img src="final_visual.png" class="final-img">
+            <img src="final_visual.png" style="width:220px; border-radius:15px; border:2px solid #d4af37; margin-top:20px;">
             <p class="sub-text" id="type-s4"></p>
         </div>
     </div>
@@ -162,14 +166,13 @@
         const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 4: document.getElementById('bg-video-s4') };
 
         const texts = {
-            s1: "2025 brought many days and many changes, but you know what the best part was — sharing another year with you. Even from afar, you made it special just by being you. This year wasn’t easy for us. You lost your mom at the beginning of the year, and I lost my job in the middle of it, yet we still stood strong together. You inspire me more than you know, and I’ve learned so much from you this year. I made this message so we can enter 2026 together, and I hope the next year keeps us close and full of love.",
-            s2: "Like those wish lanterns floating into the sky, I want to make some promises to you this year. I know I still have flaws, but I’m trying every day to be a better person. Not because you asked me to change, but because your love and your cuteness are changing me. I’m choosing to grow, to improve, and to become someone who truly deserves you. I wish you growth, happiness, health, and all the success and prosperity your heart desires. May all your dreams shine as brightly as your smile, and may every step you take this year bring you closer to the life you’ve always imagined. And for us, I wish we could be together this year, so this long distance feels smaller and our love feels closer than ever.",
-            s4: "As we step into 2026, I just want you to know… being with you, even from afar, makes my world brighter every single day. I can’t promise every day will be perfect, but I promise to keep loving you, laughing with you, and cherishing every little moment we share. I can’t wait for the adventures we’ll have, the silly moments that make us laugh until our stomachs hurt, and the quiet times where it’s just you and me. You are my heart, my favorite thought, and the best part of every day. Here’s to a year where our love grows stronger, our dreams get closer, and maybe… just maybe… the distance between us fades a little more. I love you, Haze, more than words can ever say — and I’m so lucky it’s with you I get to enter this New Year."
+            s1: "2025 brought many days and many changes, but you know what the best part was — sharing another year with you...",
+            s2: "Like those wish lanterns floating into the sky, I want to make some promises to you this year...",
+            s4: "As we step into 2026, I just want you to know… being with you makes my world brighter every day..."
         };
 
-        function typeText(elementId, textKey, delay = 0, speed = 40) {
+        function typeText(elementId, textKey, delay = 0) {
             const el = document.getElementById(elementId);
-            if (!el) return;
             el.innerHTML = '';
             const words = texts[textKey].split(' ');
             setTimeout(() => {
@@ -178,7 +181,7 @@
                     span.innerText = word;
                     span.className = 'word';
                     el.appendChild(span);
-                    setTimeout(() => span.classList.add('visible'), i * speed);
+                    setTimeout(() => span.classList.add('visible'), i * 40);
                 });
             }, delay);
         }
@@ -189,55 +192,52 @@
             iceVideo.style.display = 'block';
             iceVideo.play();
             iceVideo.onended = function() {
-                if(bgVideos[1]) bgVideos[1].play();
-                document.getElementById('video-container').style.opacity = "0";
-                setTimeout(() => {
-                    document.getElementById('video-container').style.display = "none";
-                    document.getElementById('s1-content').style.display = 'flex';
-                    typeText('type-s1', 's1', 500);
-                }, 1000);
+                bgVideos[1].play();
+                document.getElementById('video-container').style.display = "none";
+                document.getElementById('s1-content').style.display = 'flex';
+                typeText('type-s1', 's1', 500);
             };
         }
 
         function goToSlide(n) {
             Object.values(bgVideos).forEach(v => { if(v) v.pause(); });
-            
-            if (n >= 1 && n <= 3) { 
-                if (piano.paused) piano.play(); 
-            } else if (n === 4) {
-                let fadeOut = setInterval(() => {
-                    if (piano.volume > 0.05) { piano.volume -= 0.05; } 
-                    else { piano.pause(); clearInterval(fadeOut); }
-                }, 100);
-            }
-            
+            if (n <= 3) { if (piano.paused) piano.play(); } 
+            else { piano.pause(); } // Stop music on Slide 4
+
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.getElementById('s' + n).classList.add('active');
             
-            if(bgVideos[n]) {
-                bgVideos[n].currentTime = 0;
-                bgVideos[n].play();
-            }
-
-            if(n === 2) { typeText('type-s2', 's2', 800); }
+            if(bgVideos[n]) { bgVideos[n].currentTime = 0; bgVideos[n].play(); }
+            if(n === 2) typeText('type-s2', 's2', 800);
             if(n === 4) { startCounter(); typeText('type-s4', 's4', 1500); }
         }
 
-        function startEnvelopeVideo() {
+        function startSequence() {
             const v = document.getElementById('envelope-video-final');
-            v.playbackRate = 0.5; // Slow motion
+            const img = document.getElementById('frozen-card');
+            const btn = document.getElementById('final-trigger');
+            const inst = document.getElementById('instruct-s3');
+
             v.play();
-            document.getElementById('instruct-s3').style.opacity = '0';
-            
-            // Wait for exactly 30 seconds total
-            setTimeout(() => {
-                v.style.opacity = '0'; // Fade video to black
-                setTimeout(() => {
-                    v.pause();
-                    v.style.display = 'none';
-                    document.getElementById('final-trigger').style.display = 'block';
-                }, 1500); // Time for the fade-out to complete
-            }, 30000); 
+            inst.style.display = 'none';
+
+            // 1. Monitor video for the "Open" moment (adjust 5 to your exact time)
+            const checkOpen = setInterval(() => {
+                if (v.currentTime >= 5) {
+                    clearInterval(checkOpen);
+                    v.style.display = 'none'; // Stop video
+                    img.classList.add('zoom-out'); // Show PNG and Zoom Out
+                    
+                    // 2. Wait 30 seconds for her to read
+                    setTimeout(() => {
+                        img.style.opacity = '0'; // Go to black
+                        setTimeout(() => {
+                            img.style.display = 'none';
+                            btn.style.display = 'block'; // Show Sanctuary Button
+                        }, 1500);
+                    }, 30000);
+                }
+            }, 100);
         }
 
         function startCounter() {
@@ -248,15 +248,6 @@
                 display.innerText = count + " Days";
                 if(count >= 365) { clearInterval(interval); display.innerText = "365 Days. One Love."; }
             }, 30); 
-        }
-
-        function releaseLantern(e) {
-            const l = document.createElement('img');
-            l.src = 'lantern.png'; l.className = 'lantern-img';
-            l.style.left = (e.clientX - 30) + 'px'; l.style.top = e.clientY + 'px';
-            document.body.appendChild(l);
-            l.animate([{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-110vh)', opacity: 0 }], { duration: 6000 });
-            setTimeout(() => l.remove(), 7000);
         }
     </script>
 </body>
