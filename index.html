@@ -56,7 +56,6 @@
         @keyframes emerge {
             to { opacity: 1; transform: scale(1); }
         }
-        .custom-img-btn:active { transform: scale(0.95); }
 
         .content-layer { z-index: 10; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; }
         
@@ -72,17 +71,11 @@
             font-size: 1.05rem; color: #f0e68c; max-width: 95%; 
             margin-top: 15px; line-height: 1.45; padding: 18px; 
             border-radius: 12px; background: rgba(0,0,0,0.6);
-            min-height: 3.5em;
-            letter-spacing: 0.2px;
         }
 
         .instruction {
-            font-size: 0.8rem;
-            color: #d4af37;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 8px;
-            opacity: 1;
+            font-size: 0.8rem; color: #d4af37; text-transform: uppercase;
+            letter-spacing: 2px; margin-top: 8px; opacity: 1;
         }
         
         .word { opacity: 0; display: inline-block; transition: opacity 0.5s ease; margin-right: 4px; }
@@ -90,27 +83,30 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* SLIDE 3: SCREEN BLENDING FOR PURE BLACK BACKGROUND */
+        /* UPDATED ENVELOPE FIX */
         .envelope-container { 
             width: 320px; 
             margin-top: 20px; 
             z-index: 20; 
             opacity: 0; 
             animation: emerge 1.5s forwards 0.5s;
+            position: relative;
+            /* Tighter mask to force edges to disappear */
+            -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);
         }
         
         #envelope-video { 
             width: 100%; 
             display: block; 
-            /* SCREEN makes pure black disappear */
-            mix-blend-mode: screen; 
-            /* Slight contrast boost to kill any low-light gray pixels */
-            filter: contrast(1.1) brightness(1.1);
+            /* Lighten often performs better than screen for removing near-black backgrounds */
+            mix-blend-mode: lighten; 
+            /* Increase contrast slightly to make sure the background is absolute black */
+            filter: contrast(1.2) brightness(1.1);
             cursor: pointer;
         }
         
         .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 3s; }
-        
         #count-text { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px #d4af37; margin-top: 5vh; }
     </style>
 </head>
@@ -149,9 +145,7 @@
                     <source src="envelope.mp4" type="video/mp4">
                 </video>
             </div>
-            
             <div id="instruct-s3" class="instruction">Tap the envelope to open...</div>
-
             <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
         </div>
     </div>
@@ -175,7 +169,6 @@
             const text = el.innerText;
             el.innerHTML = '';
             const words = text.split(' ');
-            
             setTimeout(() => {
                 words.forEach((word, i) => {
                     const span = document.createElement('span');
@@ -194,7 +187,6 @@
             iceVideo.play();
             iceVideo.onended = function() {
                 bgVideos[1].play();
-                document.getElementById('video-container').style.transition = "opacity 1.5s";
                 document.getElementById('video-container').style.opacity = "0";
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
@@ -208,35 +200,18 @@
         function goToSlide(n) {
             Object.values(bgVideos).forEach(v => { if(v) v.pause(); });
             if (n === 2 || n === 3) { if (piano.paused) piano.play(); } 
-            else { piano.pause(); piano.currentTime = 0; }
-
+            else { piano.pause(); }
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-            const nextSlide = document.getElementById('s' + n);
-            nextSlide.classList.add('active');
-
+            document.getElementById('s' + n).classList.add('active');
             if(bgVideos[n]) bgVideos[n].play();
-
-            if(n === 2) {
-                setTimeout(() => {
-                    typeText('head-s2', 0, 250);
-                    setTimeout(() => {
-                        document.getElementById('instruct-s2').style.opacity = "1";
-                        typeText('type-s2', 1000, 130);
-                    }, 1200);
-                }, 1000);
-            }
-            if(n === 4) {
-                startCounter();
-                setTimeout(() => typeText('type-s4', 500, 130), 1500);
-            }
+            if(n === 2) { typeText('head-s2', 0, 250); typeText('type-s2', 1200, 130); }
+            if(n === 4) { startCounter(); typeText('type-s4', 500, 130); }
         }
 
         function openEnvelope() {
             const video = document.getElementById('envelope-video');
             video.play();
-            video.onended = function() {
-                document.getElementById('final-trigger').style.display = 'block';
-            };
+            video.onended = () => { document.getElementById('final-trigger').style.display = 'block'; };
         }
 
         function startCounter() {
@@ -254,7 +229,7 @@
             l.src = 'lantern.png'; l.className = 'lantern-img';
             l.style.left = (e.clientX - 30) + 'px'; l.style.top = e.clientY + 'px';
             document.body.appendChild(l);
-            l.animate([{ transform: 'translateY(0) scale(1)', opacity: 1 }, { transform: `translateY(-110vh) scale(0.5)`, opacity: 0 }], { duration: 6000 });
+            l.animate([{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-110vh)', opacity: 0 }], { duration: 6000 });
             setTimeout(() => l.remove(), 7000);
         }
     </script>
