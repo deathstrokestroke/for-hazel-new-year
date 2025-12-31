@@ -84,26 +84,22 @@
 
         .lantern-img { position: absolute; width: 60px; pointer-events: none; z-index: 5; filter: drop-shadow(0 0 15px #d4af37); }
         
-        /* NEW ENVELOPE VIDEO STYLING */
-        .envelope-wrapper {
-            width: 100%;
-            height: 60vh;
-            margin-top: 20px;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* SLIDE 3: FULL SCREEN VIDEO SETTINGS */
+        .fullscreen-wrap {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 5; background: #000;
+        }
+        #envelope-video-final {
+            width: 100%; height: 100%; object-fit: cover; cursor: pointer;
         }
 
-        #envelope-video-final { 
-            max-width: 90%; 
-            max-height: 100%;
-            border: 2px solid #d4af37;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        .overlay-content {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 15; pointer-events: none;
         }
-        
+        .overlay-content img { pointer-events: auto; }
+
         .final-img { width: 220px; margin-top: 3vh; border-radius: 15px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; animation: emerge 2s forwards 2s; }
         #count-text { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px #d4af37; margin-top: 5vh; }
     </style>
@@ -136,15 +132,14 @@
     </div>
 
     <div class="slide" id="s3">
-        <video loop playsinline id="bg-video-s3" class="bg-video"><source src="ny_bg3.mp4" type="video/mp4"></video>
-        <div class="content-layer">
-            <div class="envelope-wrapper">
-                <video id="envelope-video-final" playsinline onclick="playEnvelopeVideo()">
-                    <source src="envelope_with_bg.mp4" type="video/mp4">
-                </video>
-            </div>
-            <div id="instruct-s3" class="instruction">Tap the video to open...</div>
-            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 240px; margin-top: 30px; display: none;">
+        <div class="fullscreen-wrap">
+            <video id="envelope-video-final" playsinline onclick="playEnvelopeVideo()">
+                <source src="envelope_with_bg.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="overlay-content">
+            <div id="instruct-s3" class="instruction" style="background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 8px; margin-bottom: 20px;">Tap the envelope to open...</div>
+            <img src="btn_sanctuary.png" id="final-trigger" class="custom-img-btn" onclick="goToSlide(4)" style="width: 260px; display: none; animation-delay: 0s;">
         </div>
     </div>
 
@@ -160,7 +155,7 @@
     <script>
         const piano = document.getElementById('bgPiano');
         piano.volume = 0.4;
-        const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 3: document.getElementById('bg-video-s3'), 4: document.getElementById('bg-video-s4') };
+        const bgVideos = { 1: document.getElementById('bg-video-s1'), 2: document.getElementById('bg-video-s2'), 4: document.getElementById('bg-video-s4') };
 
         const texts = {
             s1: "2025 brought many days and many changes, but you know what the best part was — sharing another year with you. Even from afar, you made it special just by being you. This year wasn’t easy for us. You lost your mom at the beginning of the year, and I lost my job in the middle of it, yet we still stood strong together. You inspire me more than you know, and I’ve learned so much from you this year. I made this message so we can enter 2026 together, and I hope the next year keeps us close and full of love.",
@@ -190,7 +185,7 @@
             iceVideo.style.display = 'block';
             iceVideo.play();
             iceVideo.onended = function() {
-                bgVideos[1].play();
+                if(bgVideos[1]) bgVideos[1].play();
                 document.getElementById('video-container').style.opacity = "0";
                 setTimeout(() => {
                     document.getElementById('video-container').style.display = "none";
